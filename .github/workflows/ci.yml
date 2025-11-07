@@ -29,6 +29,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Generate Compilation Database
+        run: |
+          mkdir build
+          cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cp build/compile_commands.json .
+
       - name: Trunk Code Quality
         uses: trunk-io/trunk-action@v1
 
