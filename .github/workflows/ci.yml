@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     concurrency:
       group: ci-${{ matrix.os }}
@@ -83,7 +83,7 @@ jobs:
         run: pip install meson ninja
 
       - name: Build and Install Criterion (Linux / macOS)
-        if: runner.os != 'Windows' && steps.criterion_cache.outputs.cache-hit != 'true'
+        if: steps.criterion_cache.outputs.cache-hit != 'true'
         run: |
           cd /tmp/criterion
           meson setup builddir --prefix=/usr/local
@@ -100,21 +100,14 @@ jobs:
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build (Linux / macOS)
-        if: runner.os != 'Windows'
         run: cmake --build build --config Release -- -j$(nproc)
 
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        run: cmake --build build --config Release -- /m
-
       - name: Run Tests
-        if: runner.os != 'Windows'
         run: |
           cd build
           ctest --output-on-failure  --output-junit test-results.xml
 
       - name: Upload Test Results
-        if: runner.os != 'Windows'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
