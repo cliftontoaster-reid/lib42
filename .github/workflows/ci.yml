@@ -1,8 +1,6 @@
 permissions:
   contents: read
-  actions: write
   checks: write
-  pull-requests: write
 
 on:
   push:
@@ -31,48 +29,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-
-      - name: Install trunk via npm
-        run: |
-          npm init -y
-          npm install --no-audit --no-fund --no-progress --save-dev @trunkio/launcher
-
-      - name: Run trunk lint
-        run: |
-          npx trunk check --ci
-
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-
-      - name: Install trunk via npm
-        run: |
-          npm init -y
-          npm install --no-audit --no-fund --no-progress --save-dev @trunkio/launcher
-
-      - name: Run trunk format (check)
-        run: |
-          npx trunk fmt --ci
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "ERROR: Repository is not formatted. See diff below:"
-            git --no-pager diff
-            exit 1
-          fi
+      - name: Trunk Code Quality
+        uses: trunk-io/trunk-action@v1
 
   build:
     needs:
       - lint
-      - format
     strategy:
       fail-fast: true
       matrix:
