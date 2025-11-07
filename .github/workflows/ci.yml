@@ -80,7 +80,22 @@ jobs:
           python-version: 3.x
 
       - name: Install Meson and Ninja
-        run: pip install meson ninja
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build meson
+
+          export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+')
+          wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
+          sudo mkdir /opt/meson
+          sudo tar xf meson.tar.gz --strip-components=1 -C /opt/meson
+          sudo mv /opt/meson/meson.py /opt/meson/meson
+          sudo ln -s /opt/meson/meson /usr/local/bin/meson
+
+      - name: Build and Install Criterion
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install meson ninja
 
       - name: Build Criterion
         if: steps.criterion_cache.outputs.cache-hit != 'true'
@@ -95,7 +110,7 @@ jobs:
           sudo meson install -C builddir
 
       - name: Update shared library cache (Linux)
-        if: runner.os == 'Linux'
+        if: runner.os == 'ubuntu-latest'
         run: sudo ldconfig
 
       - name: Configure CMake
