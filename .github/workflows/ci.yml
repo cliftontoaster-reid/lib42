@@ -74,12 +74,7 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
-      - name: Set up Python (for Meson)
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Install Meson and Ninja
+      - name: Install Meson and Ninja (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update -y
@@ -92,7 +87,7 @@ jobs:
           sudo mv /opt/meson/meson.py /opt/meson/meson
           sudo ln -s /opt/meson/meson /usr/local/bin/meson
 
-      - name: Build and Install Criterion
+      - name: Install Meson and Ninja (macOS)
         if: matrix.os == 'macos-latest'
         run: |
           brew install meson ninja
@@ -101,13 +96,13 @@ jobs:
         if: steps.criterion_cache.outputs.cache-hit != 'true'
         run: |
           cd /tmp/criterion
-          meson setup builddir --prefix=/usr/local
-          meson compile -C builddir
+          $(which meson) setup builddir --prefix=/usr/local
+          $(which meson) compile -C builddir
 
       - name: Install Criterion
         run: |
           cd /tmp/criterion
-          sudo meson install -C builddir
+          sudo $(which meson) install -C builddir
 
       - name: Update shared library cache (Linux)
         if: runner.os == 'ubuntu-latest'
@@ -170,8 +165,8 @@ jobs:
         if: steps.criterion_cache.outputs.cache-hit != 'true'
         run: |
           cd /tmp/criterion
-          meson setup builddir --prefix=/usr/local
-          meson compile -C builddir
+          $(which meson) setup builddir --prefix=/usr/local
+          $(which meson) compile -C builddir
           sudo $(which meson) install -C builddir
           sudo ldconfig
 
