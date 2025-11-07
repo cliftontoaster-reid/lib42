@@ -123,41 +123,21 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Clone Criterion and get commit hash
-        id: criterion_commit
-        run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
-          cd /tmp/criterion
-          echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Cache built Criterion
-        uses: actions/cache@v4
-        id: criterion_cache
-        with:
-          path: |
-            /tmp/criterion/builddir
-            /tmp/criterion/install
-          key: criterion-${{ steps.criterion_commit.outputs.commit_hash }}
-
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
-      - name: Set up Python (for Meson)
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Install Meson and Ninja
-        run: pip install meson ninja
-
-      - name: Build and Install Criterion
-        if: steps.criterion_cache.outputs.cache-hit != 'true'
+      - name: Install dependencies
         run: |
-          cd /tmp/criterion
-          $(which meson) setup builddir --prefix=/usr/local
-          $(which meson) compile -C builddir
-          sudo $(which meson) install -C builddir
-          sudo ldconfig
+          sudo apt-get update -y
+          sudo apt-get purge -y man-db
+          sudo apt-get install -y ninja-build meson libcriterion-dev
+
+          export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+')
+          wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
+          sudo mkdir /opt/meson
+          sudo tar xf meson.tar.gz --strip-components=1 -C /opt/meson
+          sudo mv /opt/meson/meson.py /opt/meson/meson
+          sudo ln -s /opt/meson/meson /usr/local/bin/meson
 
       - name: Configure CMake
         run: |
@@ -165,7 +145,7 @@ jobs:
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCODE_COVERAGE=ON
 
       - name: Build
-        run: cmake --build build --config Release -- -j$(nproc)
+        run: cmake --build build
 
       - name: Install lcov
         run: |
