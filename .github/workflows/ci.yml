@@ -132,10 +132,7 @@ jobs:
         run: |
           cd build
           ctest --output-on-failure
-          # Use lcov to capture coverage data from build directory. geninfo can
-          # be brittle; lcov --capture is more portable and avoids certain
-          # warnings/mismatch errors.
-          lcov --capture --directory . --output-file coverage.info
+          geninfo . --output-filename coverage.info --ignore-errors mismatch --memory 0
           lcov --remove coverage.info '/usr/*' --output-file coverage.info
           lcov --list coverage.info || true
 
