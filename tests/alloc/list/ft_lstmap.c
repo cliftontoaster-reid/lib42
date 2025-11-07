@@ -22,7 +22,7 @@ static void* dup_upper(void* s) {
   char* in = s;
   char* out = strdup(in);
   if (!out) return NULL;
-  for (size_t i = 0; out[i]; ++i) out[i] = toupper((unsigned char)out[i]);
+  for (size_t i = 0; out[i]; ++i) out[i] = (char)toupper((unsigned char)out[i]);
   return out;
 }
 
