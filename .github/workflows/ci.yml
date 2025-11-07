@@ -65,7 +65,10 @@ jobs:
           meson setup builddir --prefix=/usr/local
           meson compile -C builddir
           sudo $(which meson) install -C builddir
-          sudo ldconfig
+
+      - name: Update shared library cache (Linux)
+        if: runner.os == 'Linux'
+        run: sudo ldconfig
 
       - name: Build and Install Criterion (Windows)
         if: runner.os == 'Windows'
