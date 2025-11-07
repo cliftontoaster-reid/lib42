@@ -55,6 +55,22 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Clone Criterion and get commit hash
+        id: criterion_commit
+        run: |
+          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
+          cd /tmp/criterion
+          echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Cache built Criterion
+        uses: actions/cache@v4
+        id: criterion_cache
+        with:
+          path: |
+            /tmp/criterion/builddir
+            /tmp/criterion/install
+          key: criterion-${{ steps.criterion_commit.outputs.commit_hash }}
+
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
@@ -67,9 +83,8 @@ jobs:
         run: pip install meson ninja
 
       - name: Build and Install Criterion (Linux / macOS)
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' && steps.criterion_cache.outputs.cache-hit != 'true'
         run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
           cd /tmp/criterion
           meson setup builddir --prefix=/usr/local
           meson compile -C builddir
@@ -112,6 +127,22 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Clone Criterion and get commit hash
+        id: criterion_commit
+        run: |
+          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
+          cd /tmp/criterion
+          echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Cache built Criterion
+        uses: actions/cache@v4
+        id: criterion_cache
+        with:
+          path: |
+            /tmp/criterion/builddir
+            /tmp/criterion/install
+          key: criterion-${{ steps.criterion_commit.outputs.commit_hash }}
+
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
@@ -124,8 +155,8 @@ jobs:
         run: pip install meson ninja
 
       - name: Build and Install Criterion
+        if: steps.criterion_cache.outputs.cache-hit != 'true'
         run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
           cd /tmp/criterion
           meson setup builddir --prefix=/usr/local
           meson compile -C builddir
