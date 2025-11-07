@@ -62,7 +62,7 @@ jobs:
 
       - name: Run trunk format (check)
         run: |
-          npx trunk format --ci
+          npx trunk fmt --ci
           if [ -n "$(git status --porcelain)" ]; then
             echo "ERROR: Repository is not formatted. See diff below:"
             git --no-pager diff
