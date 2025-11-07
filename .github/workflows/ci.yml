@@ -100,10 +100,10 @@ jobs:
       - name: Configure CMake
         run: |
           mkdir build
-          cmake -S . -B build
+          cmake -S . -B build -G Ninja
 
       - name: Build (Linux / macOS)
-        run: cmake --build build --config Release -- -j$(nproc)
+        run: cmake --build build
 
       - name: Run Tests
         run: |
@@ -142,7 +142,7 @@ jobs:
       - name: Configure CMake
         run: |
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCODE_COVERAGE=ON
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCODE_COVERAGE=ON -G Ninja
 
       - name: Build
         run: cmake --build build
