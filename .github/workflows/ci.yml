@@ -64,7 +64,7 @@ jobs:
           cd /tmp/criterion
           meson setup builddir --prefix=/usr/local
           meson compile -C builddir
-          sudo meson install -C builddir
+          sudo $(which meson) install -C builddir
 
       - name: Build and Install Criterion (Windows)
         if: runner.os == 'Windows'
@@ -117,7 +117,7 @@ jobs:
           cd /tmp/criterion
           meson setup builddir --prefix=/usr/local
           meson compile -C builddir
-          sudo meson install -C builddir
+          sudo $(which meson) install -C builddir
 
       - name: Configure CMake
         run: |
