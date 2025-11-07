@@ -29,6 +29,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get purge -y man-db
+          sudo apt-get install -y ninja-build meson libcriterion-dev
+          export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+' )
+          wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
+          sudo mkdir /opt/meson
+          sudo tar xf meson.tar.gz --strip-components=1 -C /opt/meson
+          sudo mv /opt/meson/meson.py /opt/meson/meson
+          sudo ln -s /opt/meson/meson /usr/local/bin/meson
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install meson ninja criterion pkg-config
+          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:$(brew --prefix)/opt/criterion/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
