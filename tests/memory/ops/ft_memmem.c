@@ -113,16 +113,18 @@ Test(ft_memmem, multiple_matches_only_first) {
 }
 
 Test(ft_memmem, random_haystack_and_needle) {
-  srand(13);
+  srand(13);  // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 200; ++t) {
-    size_t hlen = (rand() % 128) + 1;
-    size_t nlen = (rand() % 16);
+    size_t hlen = (rand() % 128) + 1;  // NOLINT(cert-msc50-cpp)
+    size_t nlen = (rand() % 16);       // NOLINT(cert-msc50-cpp)
     unsigned char* h = malloc(hlen);
     unsigned char* n = malloc(nlen ? nlen : 1);
     cr_assert_not_null(h);
     cr_assert_not_null(n);
-    for (size_t i = 0; i < hlen; ++i) h[i] = rand() & 0xFF;
-    for (size_t i = 0; i < nlen; ++i) n[i] = rand() & 0xFF;
+    for (size_t i = 0; i < hlen; ++i)
+      h[i] = rand() & 0xFF;  // NOLINT(cert-msc50-cpp)
+    for (size_t i = 0; i < nlen; ++i)
+      n[i] = rand() & 0xFF;  // NOLINT(cert-msc50-cpp)
     void* r1 = ft_memmem(h, hlen, n, nlen);
     void* r2 = expect_memmem(h, hlen, n, nlen);
     cr_assert_eq(r1, r2);

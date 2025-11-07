@@ -79,16 +79,16 @@ Test(ft_memcmp, large_equal_then_diff) {
 }
 
 Test(ft_memcmp, random_pairs_consistency) {
-  srand(7);
+  srand(7);  // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 200; ++t) {
-    size_t n = rand() % 128;
+    size_t n = rand() % 128;  // NOLINT(cert-msc50-cpp)
     unsigned char* a = malloc(n ? n : 1);
     unsigned char* b = malloc(n ? n : 1);
     cr_assert_not_null(a);
     cr_assert_not_null(b);
     for (size_t i = 0; i < n; ++i) {
-      a[i] = rand();
-      b[i] = rand();
+      a[i] = rand();  // NOLINT(cert-msc50-cpp)
+      b[i] = rand();  // NOLINT(cert-msc50-cpp)
     }
     int r1 = ft_memcmp(a, b, n);
     int r2 = memcmp(a, b, n);

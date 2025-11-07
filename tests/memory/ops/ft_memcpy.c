@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 09:20:48 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 09:22:56 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/07 12:31:05 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,14 +121,15 @@ Test(ft_memcpy, self_copy_pointer_equality) {
 }
 
 Test(ft_memcpy, stress_many_small_copies) {
-  srand(42);
+  srand(42);  // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 1000; ++t) {
-    size_t n = (rand() % 32) + 1;
+    size_t n = (rand() % 32) + 1;  // NOLINT(cert-msc50-cpp)
     unsigned char src[64];
     unsigned char dest1[64];
     unsigned char dest2[64];
 
-    for (size_t i = 0; i < n; ++i) src[i] = (unsigned char)rand();
+    for (size_t i = 0; i < n; ++i)
+      src[i] = (unsigned char)rand();  // NOLINT(cert-msc50-cpp)
 
     memset(dest1, 0xEE, sizeof(dest1));
     memset(dest2, 0xEE, sizeof(dest2));
@@ -141,9 +142,9 @@ Test(ft_memcpy, stress_many_small_copies) {
 }
 
 Test(ft_memcpy, random_buffers_consistency) {
-  srand(123456);
+  srand(123456);  // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 200; ++t) {
-    size_t n = rand() % 512;
+    size_t n = rand() % 512;  // NOLINT(cert-msc50-cpp)
     unsigned char* src = malloc(n ? n : 1);
     unsigned char* d1 = malloc(n ? n : 1);
     unsigned char* d2 = malloc(n ? n : 1);
@@ -151,7 +152,8 @@ Test(ft_memcpy, random_buffers_consistency) {
     cr_assert_not_null(d1);
     cr_assert_not_null(d2);
 
-    for (size_t i = 0; i < n; ++i) src[i] = (unsigned char)rand();
+    for (size_t i = 0; i < n; ++i)
+      src[i] = (unsigned char)rand();  // NOLINT(cert-msc50-cpp)
 
     ft_memcpy(d1, src, n);
     memcpy(d2, src, n);

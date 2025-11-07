@@ -83,16 +83,17 @@ Test(ft_mempcpy, copy_high_bytes) {
 }
 
 Test(ft_mempcpy, random_copy_sequences) {
-  srand(3);
+  srand(3);  // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 200; ++t) {
-    size_t n = rand() % 256;
+    size_t n = rand() % 256;  // NOLINT(cert-msc50-cpp)
     unsigned char* src = malloc(n ? n : 1);
     unsigned char* d1 = malloc(n ? n : 1);
     unsigned char* d2 = malloc(n ? n : 1);
     cr_assert_not_null(src);
     cr_assert_not_null(d1);
     cr_assert_not_null(d2);
-    for (size_t i = 0; i < n; ++i) src[i] = rand() & 0xFF;
+    for (size_t i = 0; i < n; ++i)
+      src[i] = rand() & 0xFF;  // NOLINT(cert-msc50-cpp)
     void* p1 = ft_mempcpy(d1, src, n);
     void* p2 = memcpy(d2, src, n) + n;
     cr_assert_eq((unsigned char*)p1 - d1, (unsigned char*)p2 - d2);

@@ -97,9 +97,9 @@ Test(ft_memccpy, multiple_c_only_first_matters) {
 }
 
 Test(ft_memccpy, random_inserts_of_c) {
-  srand(11);
+  srand(11);  // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 100; ++t) {
-    size_t n = (rand() % 64) + 1;
+    size_t n = (rand() % 64) + 1;  // NOLINT(cert-msc50-cpp)
     unsigned char* src = malloc(n);
     unsigned char* d1 = malloc(n);
     unsigned char* d2 = malloc(n);
@@ -108,8 +108,9 @@ Test(ft_memccpy, random_inserts_of_c) {
     cr_assert_not_null(d2);
     memset(d1, 0, n);
     memset(d2, 0, n);
-    for (size_t i = 0; i < n; ++i) src[i] = rand() & 0xFF;
-    unsigned char c = (unsigned char)(rand() & 0xFF);
+    for (size_t i = 0; i < n; ++i)
+      src[i] = rand() & 0xFF;                          // NOLINT(cert-msc50-cpp)
+    unsigned char c = (unsigned char)(rand() & 0xFF);  // NOLINT(cert-msc50-cpp)
     void* r1 = ft_memccpy(d1, src, c, n);
     /* mimic memccpy behavior using libc memchr+memcpy */
     void* pos = memchr(src, c, n);

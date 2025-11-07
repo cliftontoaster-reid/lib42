@@ -81,14 +81,14 @@ Test(ft_bzero, binary_data_zeroing) {
 }
 
 Test(ft_bzero, random_zero_ranges) {
-  srand(42);
+  srand(42); // NOLINT(cert-msc51-cpp)
   for (int t = 0; t < 100; ++t) {
-    size_t n = (rand() % 64) + 1;
+    size_t n = (rand() % 64) + 1; // NOLINT(cert-msc50-cpp)
     unsigned char buffer[64];
     for (size_t i = 0; i < sizeof(buffer); i++) {
-      buffer[i] = (unsigned char)((rand() % 255) + 1);
+      buffer[i] = (unsigned char)((rand() % 255) + 1); // NOLINT(cert-msc50-cpp)
     }
-    size_t zero_len = rand() % (n + 1);
+    size_t zero_len = rand() % (n + 1); // NOLINT(cert-msc50-cpp)
     ft_bzero(buffer, zero_len);
     for (size_t i = 0; i < zero_len; i++) {
       cr_assert_eq(buffer[i], 0);
