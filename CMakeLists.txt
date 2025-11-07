@@ -52,6 +52,20 @@ endif()
 # --- Tests (Criterion) -----------------------------------------------------
 enable_testing()
 
+# On macOS with Homebrew, help CMake/pkg-config find Criterion
+if(APPLE)
+  execute_process(
+    COMMAND brew --prefix
+    OUTPUT_VARIABLE HOMEBREW_PREFIX
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+  )
+  if(HOMEBREW_PREFIX)
+    list(APPEND CMAKE_PREFIX_PATH "${HOMEBREW_PREFIX}")
+    set(ENV{PKG_CONFIG_PATH} "${HOMEBREW_PREFIX}/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/criterion/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
+  endif()
+endif()
+
 # Try to locate Criterion (C unit testing framework). This will allow building
 # a `lib42_tests` executable that links against the library and runs tests via ctest.
 find_package(Criterion QUIET)
@@ -64,6 +78,7 @@ if(NOT Criterion_FOUND)
       add_compile_definitions(-DCRITERION_PKGCONFIG)
       set(CRITERION_INCLUDE_DIRS ${CRITERION_INCLUDE_DIRS})
       set(CRITERION_LIBRARIES ${CRITERION_LIBRARIES})
+      set(CRITERION_LIBRARY_DIRS ${CRITERION_LIBRARY_DIRS})
     endif()
   endif()
 endif()
@@ -81,6 +96,9 @@ if(Criterion_FOUND OR CRITERION_FOUND)
         target_link_libraries(${test_name} PRIVATE lib42_static Criterion::Criterion)
       else()
         target_include_directories(${test_name} PRIVATE ${CRITERION_INCLUDE_DIRS})
+        if(CRITERION_LIBRARY_DIRS)
+          target_link_directories(${test_name} PRIVATE ${CRITERION_LIBRARY_DIRS})
+        endif()
         target_link_libraries(${test_name} PRIVATE lib42_static ${CRITERION_LIBRARIES})
       endif()
       add_test(NAME ${test_name} COMMAND ${test_name})
