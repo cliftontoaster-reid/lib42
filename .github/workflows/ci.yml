@@ -52,7 +52,7 @@ jobs:
       - name: Set up Python (for Meson)
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: 3.x
 
       - name: Install Meson and Ninja
         run: pip install meson ninja
@@ -106,7 +106,7 @@ jobs:
       - name: Set up Python (for Meson)
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: 3.x
 
       - name: Install Meson and Ninja
         run: pip install meson ninja
