@@ -1,0 +1,131 @@
+cmake_minimum_required(VERSION 4.0)
+project(lib42 C)
+
+set(PROJECT_VERSION_MAJOR 0)
+set(PROJECT_VERSION_MINOR 1)
+set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION_PRERELEASE alpha)
+
+set(CMAKE_C_STANDARD 17)
+
+# Optional coverage build. When enabled the project will be compiled with
+# coverage instrumentation so gcov/lcov can capture coverage data. This should
+# only be enabled on GCC/Clang toolchains.
+option(CODE_COVERAGE "Enable coverage build (adds --coverage flags)" OFF)
+
+if(CODE_COVERAGE)
+  if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    message(STATUS "Building with coverage instrumentation enabled")
+    # Use -O0 to avoid optimization removing code paths; include debug info.
+    add_compile_options(-O0 -g --coverage)
+    # Ensure linker also uses coverage option for executables/libraries
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage")
+  else()
+    message(WARNING "CODE_COVERAGE requested but compiler does not appear to be GCC/Clang; skipping coverage flags")
+  endif()
+endif()
+
+file(GLOB_RECURSE SOURCES "src/*.c")
+
+add_library(lib42_static STATIC ${SOURCES})
+set_target_properties(lib42_static PROPERTIES OUTPUT_NAME "42")
+
+add_library(lib42_shared SHARED ${SOURCES})
+set_target_properties(lib42_shared PROPERTIES OUTPUT_NAME "42")
+
+target_include_directories(lib42_static PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+target_include_directories(lib42_shared PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+# Enable warnings as errors for GCC/Clang
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(lib42_static PRIVATE -Wall -Wextra -Werror)
+  target_compile_options(lib42_shared PRIVATE -Wall -Wextra -Werror)
+endif()
+
+# --- Tests (Criterion) -----------------------------------------------------
+enable_testing()
+
+# Try to locate Criterion (C unit testing framework). This will allow building
+# a `lib42_tests` executable that links against the library and runs tests via ctest.
+find_package(Criterion QUIET)
+if(NOT Criterion_FOUND)
+  message(STATUS "Criterion not found via CMake config; trying pkg-config...")
+  find_package(PkgConfig QUIET)
+  if(PkgConfig_FOUND)
+    pkg_check_modules(CRITERION criterion)
+    if(CRITERION_FOUND)
+      add_compile_definitions(-DCRITERION_PKGCONFIG)
+      set(CRITERION_INCLUDE_DIRS ${CRITERION_INCLUDE_DIRS})
+      set(CRITERION_LIBRARIES ${CRITERION_LIBRARIES})
+    endif()
+  endif()
+endif()
+
+if(Criterion_FOUND OR CRITERION_FOUND)
+  # Collect tests
+  file(GLOB_RECURSE TEST_SOURCES "tests/*.c")
+  if(TEST_SOURCES)
+    foreach(test_file ${TEST_SOURCES})
+      get_filename_component(test_name ${test_file} NAME_WE)
+      add_executable(${test_name} ${test_file})
+      target_include_directories(${test_name} PRIVATE include)
+      # Link the library under test and Criterion
+      if(TARGET Criterion::Criterion)
+        target_link_libraries(${test_name} PRIVATE lib42_static Criterion::Criterion)
+      else()
+        target_include_directories(${test_name} PRIVATE ${CRITERION_INCLUDE_DIRS})
+        target_link_libraries(${test_name} PRIVATE lib42_static ${CRITERION_LIBRARIES})
+      endif()
+      add_test(NAME ${test_name} COMMAND ${test_name})
+    endforeach()
+  else()
+    message(STATUS "No test sources found in tests/; skipping test target creation.")
+  endif()
+else()
+  message(STATUS "Criterion not found; skipping test target. Install Criterion to enable unit tests.")
+endif()
+
+# --- Installation ---------------------------------------------------------
+# Provide sane install rules so `cmake --install` actually installs the
+# built libraries and the public headers. Without these `cmake --install`
+# does nothing and the install_manifest will be empty.
+
+# Install libraries (both static archive and shared library). Place libs in
+# lib/ and runtime (soname) in lib/ as well; RUNTIME is used on Windows.
+install(TARGETS lib42_static lib42_shared
+  EXPORT lib42Targets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+# Install the public include/ tree so consumers can find the headers
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+  DESTINATION include/42
+  FILES_MATCHING PATTERN "*.h"
+)
+
+# Optional: install a CMake export and a package config file so downstream
+# projects can find the library via find_package(lib42). Keep it simple here.
+install(EXPORT lib42Targets
+  FILE lib42Targets.cmake
+  NAMESPACE lib42::
+  DESTINATION lib/cmake/lib42
+)
+
+# Generate a basic pkg-config file (optional). You can remove or improve
+# this if you prefer not to install a pkg-config file.
+set(_pc_file "${CMAKE_CURRENT_BINARY_DIR}/42.pc")
+file(WRITE ${_pc_file} "prefix=${CMAKE_INSTALL_PREFIX}\n")
+file(APPEND ${_pc_file} "libdir=")
+file(APPEND ${_pc_file} "${CMAKE_INSTALL_PREFIX}/lib\n")
+file(APPEND ${_pc_file} "includedir=${CMAKE_INSTALL_PREFIX}/include\n")
+file(APPEND ${_pc_file} "\nName: lib42\nDescription: 42-style utility library\nVersion: ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\nLibs: -L${libdir} -l42\nCflags: -I${includedir}\n")
+install(FILES ${_pc_file} DESTINATION lib/pkgconfig)

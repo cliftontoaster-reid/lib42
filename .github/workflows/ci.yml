@@ -1,0 +1,142 @@
+on:
+  push:
+    branches:
+      - main
+      - dev/*
+      - feature/*
+    paths: 
+      - '**.c'
+      - '**.h'
+      - 'CMakeLists.txt'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches:
+      - main
+      - dev/*
+    paths: 
+      - '**.c'
+      - '**.h'
+      - 'CMakeLists.txt'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install trunk via npm
+        run: |
+          npm init -y
+          npm install --no-audit --no-fund --no-progress --save-dev @trunkio/launcher
+
+      - name: Run trunk lint
+        run: |
+          npx trunk check --ci
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install trunk via npm
+        run: |
+          npm init -y
+          npm install --no-audit --no-fund --no-progress --save-dev @trunkio/launcher
+
+      - name: Run trunk format (check)
+        run: |
+          npx trunk format --ci
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "ERROR: Repository is not formatted. See diff below:"
+            git --no-pager diff
+            exit 1
+          fi
+
+  build:
+    needs:
+      - lint
+      - format
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    concurrency:
+      group: ci-${{ matrix.os }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      
+      - name: Build (Linux / macOS)
+        if: runner.os != 'Windows'
+        run: cmake --build build --config Release -- -j$(nproc)
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        run: cmake --build build --config Release -- /m
+
+      - name: Run Tests
+        run: |
+          cd build
+          ctest --output-on-failure
+
+  codecov:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCODE_COVERAGE=ON
+      
+      - name: Build
+        run: cmake --build build --config Release -- -j$(nproc)
+      
+      - name: Install lcov
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y lcov
+
+      - name: Generate Coverage Data
+        run: |
+          cd build
+          ctest --output-on-failure
+          # Use lcov to capture coverage data from build directory. geninfo can
+          # be brittle; lcov --capture is more portable and avoids certain
+          # warnings/mismatch errors.
+          lcov --capture --directory . --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' --output-file coverage.info
+          lcov --list coverage.info || true
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          # For private repositories you must provide a CODECOV_TOKEN in repository secrets.
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/coverage.info
+          flags: unittests
+          name: codecov-ubuntu
