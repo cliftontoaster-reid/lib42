@@ -82,13 +82,16 @@ jobs:
       - name: Install Meson and Ninja
         run: pip install meson ninja
 
-      - name: Build and Install Criterion (Linux / macOS)
+      - name: Build Criterion
         if: steps.criterion_cache.outputs.cache-hit != 'true'
         run: |
           cd /tmp/criterion
           meson setup builddir --prefix=/usr/local
           meson compile -C builddir
-          sudo $(which meson) install -C builddir
+
+      - name: Install Criterion
+        run: |
+          sudo meson install -C builddir
 
       - name: Update shared library cache (Linux)
         if: runner.os == 'Linux'
