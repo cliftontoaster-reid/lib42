@@ -75,7 +75,8 @@ jobs:
       - name: Install dependencies (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          brew install meson ninja criterion
+          brew install meson ninja criterion pkg-config
+          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:$(brew --prefix)/opt/criterion/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
       - name: Configure CMake
         run: |
