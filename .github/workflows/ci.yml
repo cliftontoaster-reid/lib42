@@ -91,6 +91,7 @@ jobs:
 
       - name: Install Criterion
         run: |
+          cd /tmp/criterion
           sudo meson install -C builddir
 
       - name: Update shared library cache (Linux)
