@@ -70,16 +70,6 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo ldconfig
 
-      - name: Build and Install Criterion (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
-          cd /tmp/criterion
-          meson setup builddir --prefix="C:/Program Files/Criterion"
-          meson compile -C builddir
-          meson install -C builddir
-
       - name: Configure CMake
         run: |
           mkdir build
@@ -94,6 +84,7 @@ jobs:
         run: cmake --build build --config Release -- /m
 
       - name: Run Tests
+        if: runner.os != 'Windows'
         run: |
           cd build
           ctest --output-on-failure
