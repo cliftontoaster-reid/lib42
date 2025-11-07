@@ -87,7 +87,15 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           cd build
-          ctest --output-on-failure
+          ctest --output-on-failure  --output-junit test-results.xml
+
+      - name: Upload Test Results
+        if: runner.os != 'Windows'
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/test-results.xml
+          report_type: test_results
 
   codecov:
     needs: build
@@ -143,4 +151,3 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./build/coverage.info
           flags: unittests
-          name: codecov-ubuntu
