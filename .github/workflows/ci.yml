@@ -55,30 +55,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Clone Criterion and get commit hash
-        id: criterion_commit
-        run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
-          cd /tmp/criterion
-          echo "commit_hash=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Cache built Criterion
-        uses: actions/cache@v4
-        id: criterion_cache
-        with:
-          path: |
-            /tmp/criterion/builddir
-            /tmp/criterion/install
-          key: criterion-${{ steps.criterion_commit.outputs.commit_hash }}
-
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
-      - name: Install Meson and Ninja (Linux)
+      - name: Install dependencies (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y ninja-build meson
+          sudo apt-get purge -y man-db
+          sudo apt-get install -y ninja-build meson libcriterion-dev
 
           export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+')
           wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
@@ -87,26 +72,10 @@ jobs:
           sudo mv /opt/meson/meson.py /opt/meson/meson
           sudo ln -s /opt/meson/meson /usr/local/bin/meson
 
-      - name: Install Meson and Ninja (macOS)
+      - name: Install dependencies (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          brew install meson ninja
-
-      - name: Build Criterion
-        if: steps.criterion_cache.outputs.cache-hit != 'true'
-        run: |
-          cd /tmp/criterion
-          $(which meson) setup builddir --prefix=/usr/local
-          $(which meson) compile -C builddir
-
-      - name: Install Criterion
-        run: |
-          cd /tmp/criterion
-          sudo $(which meson) install -C builddir
-
-      - name: Update shared library cache (Linux)
-        if: runner.os == 'ubuntu-latest'
-        run: sudo ldconfig
+          brew install meson ninja criterion
 
       - name: Configure CMake
         run: |
