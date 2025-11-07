@@ -49,6 +49,33 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
+      - name: Set up Python (for Meson)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Meson and Ninja
+        run: pip install meson ninja
+
+      - name: Build and Install Criterion (Linux / macOS)
+        if: runner.os != 'Windows'
+        run: |
+          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
+          cd /tmp/criterion
+          meson setup builddir --prefix=/usr/local
+          meson compile -C builddir
+          sudo meson install -C builddir
+
+      - name: Build and Install Criterion (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
+          cd /tmp/criterion
+          meson setup builddir --prefix="C:/Program Files/Criterion"
+          meson compile -C builddir
+          meson install -C builddir
+
       - name: Configure CMake
         run: |
           mkdir build
@@ -75,6 +102,22 @@ jobs:
 
       - name: Set up CMake
         uses: lukka/get-cmake@latest
+
+      - name: Set up Python (for Meson)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Meson and Ninja
+        run: pip install meson ninja
+
+      - name: Build and Install Criterion
+        run: |
+          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
+          cd /tmp/criterion
+          meson setup builddir --prefix=/usr/local
+          meson compile -C builddir
+          sudo meson install -C builddir
 
       - name: Configure CMake
         run: |
