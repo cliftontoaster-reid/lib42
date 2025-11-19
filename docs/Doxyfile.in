@@ -1,0 +1,30 @@
+PROJECT_NAME           = "lib42"
+PROJECT_NUMBER         = @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@
+
+# Where to put the generated documentation (relative to build dir)
+OUTPUT_DIRECTORY       = "@CMAKE_CURRENT_BINARY_DIR@/doxygen"
+
+# Source files to scan -- include public headers and source tree
+INPUT                  = @CMAKE_SOURCE_DIR@/include @CMAKE_SOURCE_DIR@/src
+RECURSIVE              = YES
+FILE_PATTERNS          = *.c *.h
+STRIP_FROM_PATH        = @CMAKE_SOURCE_DIR@
+STRIP_FROM_INC_PATH    = @CMAKE_SOURCE_DIR@
+FULL_PATH_NAMES        = NO
+
+# Generate HTML and optionally other formats
+GENERATE_HTML          = YES
+GENERATE_LATEX         = YES
+GENERATE_MAN           = YES
+
+# Don't generate man pages for directories (avoids long absolute path filenames)
+MAN_LINKS              = NO
+SHOW_DIRECTORIES       = NO
+
+# Include undocumented members by default, so the docs aren't empty
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+
+# Use the external stylesheet from doxygen-awesome-css (provided by FetchContent)
+HTML_EXTRA_STYLESHEET  = @AWESOME_CSS_DIR@/doxygen-awesome.css

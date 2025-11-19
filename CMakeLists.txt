@@ -126,7 +126,7 @@ install(TARGETS lib42_static lib42_shared
 
 # Install the public include/ tree so consumers can find the headers
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-  DESTINATION include/42
+  DESTINATION include
   FILES_MATCHING PATTERN "*.h"
 )
 
@@ -147,3 +147,33 @@ file(APPEND ${_pc_file} "${CMAKE_INSTALL_PREFIX}/lib\n")
 file(APPEND ${_pc_file} "includedir=${CMAKE_INSTALL_PREFIX}/include\n")
 file(APPEND ${_pc_file} "\nName: lib42\nDescription: 42-style utility library\nVersion: ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\nLibs: -L${libdir} -l42\nCflags: -I${includedir}\n")
 install(FILES ${_pc_file} DESTINATION lib/pkgconfig)
+
+# Doxygen documentation generation
+find_package(Doxygen QUIET)
+if(DOXYGEN_FOUND)
+  include(FetchContent)
+  FetchContent_Declare(
+    doxygen-awesome-css
+    URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/heads/main.zip
+  )
+  FetchContent_MakeAvailable(doxygen-awesome-css)
+
+  # Save the location the files were cloned into
+  # This allows us to get the path to doxygen-awesome.css
+  FetchContent_GetProperties(doxygen-awesome-css SOURCE_DIR AWESOME_CSS_DIR)
+
+  # Generate the Doxyfile
+  set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in)
+  set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+  configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
+
+  add_custom_target(doc_doxygen ALL
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYFILE_OUT}
+    COMMAND ${CMAKE_COMMAND} -E remove -f ${CMAKE_CURRENT_BINARY_DIR}/doxygen/man/man3/_home_*
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM
+  )
+else()
+  message(STATUS "Doxygen not found; skipping documentation target.")
+endif()
