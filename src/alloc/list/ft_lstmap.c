@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 t_list* ft_lstmap(t_list* lst, void* (*f)(void*), void (*del)(void*)) {
   t_list* new_list = NULL;

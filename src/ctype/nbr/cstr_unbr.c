@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ctype/nbr.h"
-#include "memory/cstr.h"
+#include "42/ctype/nbr.h"
+#include "42/memory/cstr.h"
 
 char* cstr_unbr(unsigned int n) {
   // int is implmententation-defined, so we use 22 to be safe

@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 t_vec* vec_create(size_t elem_size) {
   if (elem_size == 0) {

@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 void ft_lstclear(t_list** lst, void (*del)(void*)) {
   t_list* cur;

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ctype/ctype.h"
-#include "ctype/nbr.h"
+#include "42/ctype/ctype.h"
+#include "42/ctype/nbr.h"
 
 bool cstoi8(const char* str, int8_t* out) {
   uint8_t value = 0;

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 int ft_strncmp(const char* s1, const char* s2, size_t n) {
   if (n == 0) return 0;

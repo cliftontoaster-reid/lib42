@@ -12,8 +12,8 @@
 
 #include <limits.h>
 
-#include "ctype/ctype.h"
-#include "ctype/nbr.h"
+#include "42/ctype/ctype.h"
+#include "42/ctype/nbr.h"
 
 bool cstonbr(const char* str, int* out) {
   if (str == NULL || out == NULL) return false;

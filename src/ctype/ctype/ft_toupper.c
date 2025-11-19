@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 char ft_toupper(char c) {
   unsigned char uc = (unsigned char)c;

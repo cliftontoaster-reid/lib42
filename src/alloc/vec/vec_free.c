@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 void vec_free(t_vec* vec) {
   if (vec) {

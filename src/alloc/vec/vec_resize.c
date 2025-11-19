@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 bool vec_resize(t_vec* vec, size_t new_capacity) {
   if (!vec) return false;

@@ -12,8 +12,8 @@
 
 #include <string.h>
 
-#include "alloc/vec.h"
-#include "memory/ops.h"
+#include "42/alloc/vec.h"
+#include "42/memory/ops.h"
 
 bool vec_set(t_vec* vec, size_t index, const void* elem) {
   if (!vec || !elem) return false;

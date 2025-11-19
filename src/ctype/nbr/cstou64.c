@@ -14,8 +14,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "ctype/ctype.h"
-#include "ctype/nbr.h"
+#include "42/ctype/ctype.h"
+#include "42/ctype/nbr.h"
 
 bool cstou64(const char* str, uint64_t* out) {
   if (str == NULL || out == NULL) return false;

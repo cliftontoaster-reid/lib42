@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ctype/nbr.h"
-#include "memory/cstr.h"
+#include "42/ctype/nbr.h"
+#include "42/memory/cstr.h"
 
 char* cstr_nbr(int n) {
   bool neg = false;

@@ -12,8 +12,8 @@
 
 #include <string.h>
 
-#include "alloc/vec.h"
-#include "memory/ops.h"
+#include "42/alloc/vec.h"
+#include "42/memory/ops.h"
 
 bool vec_pop_front(t_vec* vec) {
   if (vec->size == 0) return false;

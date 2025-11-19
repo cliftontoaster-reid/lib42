@@ -12,7 +12,7 @@
 
 #include <stddef.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 void* ft_memchr(const void* s, int c, size_t n) {
   const unsigned char* ptr = (const unsigned char*)s;

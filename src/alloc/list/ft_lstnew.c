@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 t_list* ft_lstnew(void* content) {
   t_list* node = (t_list*)malloc(sizeof(t_list));

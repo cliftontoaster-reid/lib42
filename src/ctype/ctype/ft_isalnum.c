@@ -12,7 +12,7 @@
 
 #include <stdbool.h>
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 bool ft_isalnum(char c) {
   unsigned char uc = (unsigned char)c;

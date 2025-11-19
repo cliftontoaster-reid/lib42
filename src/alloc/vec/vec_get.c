@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 void* vec_get(const t_vec* vec, size_t index) {
   if (!vec) return NULL;

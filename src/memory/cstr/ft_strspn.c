@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 size_t ft_strspn(const char* s, const char* accept) {
   size_t i = 0;
