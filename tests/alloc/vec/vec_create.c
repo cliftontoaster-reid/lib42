@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 Test(vec_create, create_basic_non_null) {
   t_vec* v = vec_create(sizeof(int));

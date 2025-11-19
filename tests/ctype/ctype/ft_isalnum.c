@@ -12,7 +12,7 @@
 #include <criterion/criterion.h>
 #include <ctype.h>
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 Test(ft_isalnum, basics) {
   cr_assert(ft_isalnum('A'));

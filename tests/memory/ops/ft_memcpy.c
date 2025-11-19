@@ -15,7 +15,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 Test(ft_memcpy, basic_copy_small) {
   char src[] = "Hello, World!";

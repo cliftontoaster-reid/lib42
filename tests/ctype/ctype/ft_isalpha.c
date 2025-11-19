@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <ctype.h>
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 Test(ft_isalpha, single_letters) {
   cr_assert(ft_isalpha('A'));

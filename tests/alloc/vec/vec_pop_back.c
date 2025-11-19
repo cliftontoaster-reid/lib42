@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 Test(vec_pop_back, pop_back_from_non_empty) {
   t_vec* v = vec_create(sizeof(int));

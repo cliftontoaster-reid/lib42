@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 Test(ft_strrchr, char_found_at_end) {
   const char* s = "hello";

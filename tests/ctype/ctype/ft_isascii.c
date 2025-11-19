@@ -12,7 +12,7 @@
 
 #include <criterion/criterion.h>
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 Test(ft_isascii, basics) {
   cr_assert(ft_isascii((char)0));

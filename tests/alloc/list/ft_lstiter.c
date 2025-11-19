@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 static void add_five(void* p) {
   if (!p) return;

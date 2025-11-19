@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 Test(ft_strcspn, no_chars_in_reject) {
   const char* s = "hello";

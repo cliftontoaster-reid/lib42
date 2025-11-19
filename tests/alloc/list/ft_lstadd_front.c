@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 static int* make_int(int v) {
   int* p = malloc(sizeof(*p));

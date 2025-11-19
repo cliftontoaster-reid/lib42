@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 Test(ft_memcmp, equal_buffers_returns_zero) {
   unsigned char a[] = {1, 2, 3, 4, 5};

@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <ctype.h>
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 Test(ft_isspace, known_spaces) {
   cr_assert(ft_isspace(' '));

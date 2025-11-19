@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 Test(ft_strdup, duplicate_simple_string) {
   const char* src = "hello";

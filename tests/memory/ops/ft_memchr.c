@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 Test(ft_memchr, find_at_beginning) {
   unsigned char buf[] = {0x11, 0x22, 0x33};

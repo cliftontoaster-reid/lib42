@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 Test(ft_mempcpy, basic_copy_return_advanced_pointer) {
   unsigned char src[] = {1, 2, 3, 4};

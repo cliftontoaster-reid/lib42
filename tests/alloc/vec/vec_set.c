@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 Test(vec_set, set_valid_index_updates) {
   t_vec* v = vec_create(sizeof(int));

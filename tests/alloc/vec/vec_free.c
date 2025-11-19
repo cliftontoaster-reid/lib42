@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 Test(vec_free, free_null_pointer_no_crash) {
   vec_free(NULL);

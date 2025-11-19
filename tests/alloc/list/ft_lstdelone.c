@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 static int del_called = 0;
 static void del_flag(void* p) {

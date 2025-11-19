@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 Test(ft_lstnew, alloc_with_content) {
   int* p = malloc(sizeof(*p));

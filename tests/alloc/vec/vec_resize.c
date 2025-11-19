@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "alloc/vec.h"
+#include "42/alloc/vec.h"
 
 Test(vec_resize, resize_increase_capacity_preserves_elements) {
   t_vec* v = vec_create(sizeof(int));

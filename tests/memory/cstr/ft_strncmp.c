@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 Test(ft_strncmp, equal_within_n) {
   cr_assert_eq(ft_strncmp("hello", "hello", 5), 0);

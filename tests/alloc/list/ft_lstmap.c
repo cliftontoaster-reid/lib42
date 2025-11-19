@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 static void* dup_upper(void* s) {
   if (!s) return NULL;

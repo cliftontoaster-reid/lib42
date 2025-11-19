@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 static void* expect_memrchr(const void* s, int c, size_t n) {
   const unsigned char* p = (const unsigned char*)s;

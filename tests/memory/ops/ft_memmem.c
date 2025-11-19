@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 static void* expect_memmem(const void* haystack, size_t hlen,
                            const void* needle, size_t nlen) {
