@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.31)
 project(lib42 C)
 
 set(PROJECT_VERSION_MAJOR 0)
@@ -7,6 +7,9 @@ set(PROJECT_VERSION_PATCH 0)
 set(PROJECT_VERSION_PRERELEASE alpha)
 
 set(CMAKE_C_STANDARD 17)
+
+# Use GNUInstallDirs for standard installation directories
+include(GNUInstallDirs)
 
 # Optional coverage build. When enabled the project will be compiled with
 # coverage instrumentation so gcov/lcov can capture coverage data. This should
@@ -66,48 +69,50 @@ if(APPLE)
   endif()
 endif()
 
-# Try to locate Criterion (C unit testing framework). This will allow building
-# a `lib42_tests` executable that links against the library and runs tests via ctest.
-find_package(Criterion QUIET)
-if(NOT Criterion_FOUND)
-  message(STATUS "Criterion not found via CMake config; trying pkg-config...")
-  find_package(PkgConfig QUIET)
-  if(PkgConfig_FOUND)
-    pkg_check_modules(CRITERION criterion)
-    if(CRITERION_FOUND)
-      add_compile_definitions(-DCRITERION_PKGCONFIG)
-      set(CRITERION_INCLUDE_DIRS ${CRITERION_INCLUDE_DIRS})
-      set(CRITERION_LIBRARIES ${CRITERION_LIBRARIES})
-      set(CRITERION_LIBRARY_DIRS ${CRITERION_LIBRARY_DIRS})
+if(BUILD_TESTING)
+  # Try to locate Criterion (C unit testing framework). This will allow building
+  # a `lib42_tests` executable that links against the library and runs tests via ctest.
+  find_package(Criterion QUIET)
+  if(NOT Criterion_FOUND)
+    message(STATUS "Criterion not found via CMake config; trying pkg-config...")
+    find_package(PkgConfig QUIET)
+    if(PkgConfig_FOUND)
+      pkg_check_modules(CRITERION criterion)
+      if(CRITERION_FOUND)
+        add_compile_definitions(-DCRITERION_PKGCONFIG)
+        set(CRITERION_INCLUDE_DIRS ${CRITERION_INCLUDE_DIRS})
+        set(CRITERION_LIBRARIES ${CRITERION_LIBRARIES})
+        set(CRITERION_LIBRARY_DIRS ${CRITERION_LIBRARY_DIRS})
+      endif()
     endif()
   endif()
-endif()
 
-if(Criterion_FOUND OR CRITERION_FOUND)
-  # Collect tests
-  file(GLOB_RECURSE TEST_SOURCES "tests/*.c")
-  if(TEST_SOURCES)
-    foreach(test_file ${TEST_SOURCES})
-      get_filename_component(test_name ${test_file} NAME_WE)
-      add_executable(${test_name} ${test_file})
-      target_include_directories(${test_name} PRIVATE include)
-      # Link the library under test and Criterion
-      if(TARGET Criterion::Criterion)
-        target_link_libraries(${test_name} PRIVATE lib42_static Criterion::Criterion)
-      else()
-        target_include_directories(${test_name} PRIVATE ${CRITERION_INCLUDE_DIRS})
-        if(CRITERION_LIBRARY_DIRS)
-          target_link_directories(${test_name} PRIVATE ${CRITERION_LIBRARY_DIRS})
+  if(Criterion_FOUND OR CRITERION_FOUND)
+    # Collect tests
+    file(GLOB_RECURSE TEST_SOURCES "tests/*.c")
+    if(TEST_SOURCES)
+      foreach(test_file ${TEST_SOURCES})
+        get_filename_component(test_name ${test_file} NAME_WE)
+        add_executable(${test_name} ${test_file})
+        target_include_directories(${test_name} PRIVATE include)
+        # Link the library under test and Criterion
+        if(TARGET Criterion::Criterion)
+          target_link_libraries(${test_name} PRIVATE lib42_static Criterion::Criterion)
+        else()
+          target_include_directories(${test_name} PRIVATE ${CRITERION_INCLUDE_DIRS})
+          if(CRITERION_LIBRARY_DIRS)
+            target_link_directories(${test_name} PRIVATE ${CRITERION_LIBRARY_DIRS})
+          endif()
+          target_link_libraries(${test_name} PRIVATE lib42_static ${CRITERION_LIBRARIES})
         endif()
-        target_link_libraries(${test_name} PRIVATE lib42_static ${CRITERION_LIBRARIES})
-      endif()
-      add_test(NAME ${test_name} COMMAND ${test_name})
-    endforeach()
+        add_test(NAME ${test_name} COMMAND ${test_name})
+      endforeach()
+    else()
+      message(STATUS "No test sources found in tests/; skipping test target creation.")
+    endif()
   else()
-    message(STATUS "No test sources found in tests/; skipping test target creation.")
+    message(STATUS "Criterion not found; skipping test target. Install Criterion to enable unit tests.")
   endif()
-else()
-  message(STATUS "Criterion not found; skipping test target. Install Criterion to enable unit tests.")
 endif()
 
 # --- Installation ---------------------------------------------------------
@@ -119,15 +124,16 @@ endif()
 # lib/ and runtime (soname) in lib/ as well; RUNTIME is used on Windows.
 install(TARGETS lib42_static lib42_shared
   EXPORT lib42Targets
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 # Install the public include/ tree so consumers can find the headers
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING PATTERN "*.h"
+  PATTERN "macros.h" EXCLUDE
 )
 
 # Optional: install a CMake export and a package config file so downstream
@@ -135,7 +141,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
 install(EXPORT lib42Targets
   FILE lib42Targets.cmake
   NAMESPACE lib42::
-  DESTINATION lib/cmake/lib42
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/lib42
 )
 
 # Generate a basic pkg-config file (optional). You can remove or improve
@@ -143,10 +149,13 @@ install(EXPORT lib42Targets
 set(_pc_file "${CMAKE_CURRENT_BINARY_DIR}/42.pc")
 file(WRITE ${_pc_file} "prefix=${CMAKE_INSTALL_PREFIX}\n")
 file(APPEND ${_pc_file} "libdir=")
-file(APPEND ${_pc_file} "${CMAKE_INSTALL_PREFIX}/lib\n")
-file(APPEND ${_pc_file} "includedir=${CMAKE_INSTALL_PREFIX}/include\n")
-file(APPEND ${_pc_file} "\nName: lib42\nDescription: 42-style utility library\nVersion: ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\nLibs: -L${libdir} -l42\nCflags: -I${includedir}\n")
-install(FILES ${_pc_file} DESTINATION lib/pkgconfig)
+file(APPEND ${_pc_file} "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}\n")
+file(APPEND ${_pc_file} "includedir=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}\n")
+file(APPEND ${_pc_file} "\nName: lib42\nDescription: 42-style utility library\nVersion: ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\n")
+# Write variable references literally (escape ${} so CMake doesn't expand them)
+file(APPEND ${_pc_file} "Libs: -L\${libdir} -l42\n")
+file(APPEND ${_pc_file} "Cflags: -I\${includedir}\n")
+install(FILES ${_pc_file} DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # Doxygen documentation generation
 find_package(Doxygen QUIET)
