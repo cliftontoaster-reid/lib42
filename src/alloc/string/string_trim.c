@@ -6,7 +6,7 @@
 /*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:12:23 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/19 13:32:20 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/20 10:39:18 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,10 @@ t_string* string_trim(const t_string* s, const char* chars) {
   size_t start_trim = 0;
   size_t end_trim = s->size;
   if (chars == NULL) {
-    while (start_trim < s->size &&
-           ft_isspace((unsigned char)s->data[start_trim])) {
+    while (start_trim < s->size && ft_isspace(s->data[start_trim])) {
       start_trim++;
     }
-    while (end_trim > start_trim &&
-           ft_isspace((unsigned char)s->data[end_trim - 1])) {
+    while (end_trim > start_trim && ft_isspace(s->data[end_trim - 1])) {
       end_trim--;
     }
   } else {

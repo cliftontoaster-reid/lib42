@@ -54,7 +54,7 @@ jobs:
       - name: Generate Compilation Database
         run: |
           mkdir build
-          cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=ON
           cp build/compile_commands.json .
 
       - name: Trunk Code Quality
@@ -100,7 +100,7 @@ jobs:
       - name: Configure CMake
         run: |
           mkdir build
-          cmake -S . -B build -G Ninja
+          cmake -S . -B build -G Ninja -DBUILD_TESTING=ON
 
       - name: Build (Linux / macOS)
         run: cmake --build build
