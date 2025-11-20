@@ -3,5 +3,5 @@ Version: @PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@
 Section: libs
 Priority: optional
 Architecture: @ARCH@
-Maintainer: lib42 packager <no-reply@example.com>
+Maintainer: Clifton Toaster Reid <clifton.toaster.reid@proton.me>
 Description: C Standard Library for the School 42 projects

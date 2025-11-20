@@ -52,6 +52,3 @@ This package contains header files, static library archives and cmake helper fil
 %{_libdir}/cmake/lib42/*
 
 %changelog
-* Wed Nov 19 2025 Your Name <you@example.com> - %{version}-%{release}
-- Initial RPM packaging for lib42
-
