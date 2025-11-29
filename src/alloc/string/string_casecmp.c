@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:40:46 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 17:13:32 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:58:17 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int string_casecmp(const t_string* a, const t_string* b) {
 
   size_t min_size = (a->size < b->size) ? a->size : b->size;
   for (size_t i = 0; i < min_size; ++i) {
-    unsigned char c1 = (unsigned char)a->data[i];
-    unsigned char c2 = (unsigned char)b->data[i];
+    char c1 = a->data[i];
+    char c2 = b->data[i];
     int diff = (int)ft_tolower(c1) - (int)ft_tolower(c2);
     if (diff != 0) return diff;
   }
