@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 14:40:30 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/19 13:04:13 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/29 17:13:34 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,13 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <sys/types.h>
 
 #include "42/alloc/vec.h"
+
+/** @private Magic number to identify valid t_string instances. */
+#define STRING_MAGIC 0x53545017U /* "STR<non-printable>" */
 
 /**
  * @brief Variable-length string structure.
@@ -31,6 +35,8 @@
  * manipulate strings safely.
  */
 typedef struct s_string {
+  /// @private Magic number to identify valid t_string instances.
+  uint32_t magic;
   /// @private Pointer to the internal character buffer.
   char* data;
   /// @private Current size of the string (number of valid characters).
@@ -72,8 +78,23 @@ t_string* string_from(const char* cstr);
 t_string* string_new();
 
 /**
+ * @brief Append raw data to a t_string.
+ * @memberof s_string
+ *
+ * Appends @p src bytes to the end of @p str. The function may reallocate
+ * the internal buffer if needed to fit the additional data.
+ *
+ * @param str Pointer to the string to append to. Must not be NULL.
+ * @param src Pointer to the data to append. Must not be NULL.
+ * @return true on success, false if memory allocation fails or if @p str
+ *         is NULL.
+ */
+bool string_append(t_string* str, const void* src);
+
+/**
  * @brief Append a t_string to another t_string.
  * @memberof s_string
+ * @deprecated Use \ref string_append instead.
  *
  * This function appends all bytes of @p src to the end of @p str.
  * It behaves like `string_append(dest, src->data)` but is provided
@@ -91,6 +112,7 @@ bool string_append_string(t_string* str, const t_string* src);
 /**
  * @brief Append a C-style string to @p str.
  * @memberof s_string
+ * @deprecated Use \ref string_append instead.
  *
  * Appends the contents of @p cstr to the end of @p str. The function may
  * reallocate the internal buffer if needed to fit the additional data.
@@ -104,8 +126,23 @@ bool string_append_string(t_string* str, const t_string* src);
 bool string_append_cstr(t_string* str, const char* cstr);
 
 /**
+ * @brief Prepend raw data to a t_string.
+ * @memberof s_string
+ *
+ * Inserts @p src bytes at the beginning of @p str. The function may
+ * reallocate the internal buffer if needed to fit the additional data.
+ *
+ * @param str Pointer to the string to modify. Must not be NULL.
+ * @param src Pointer to the data to prepend. Must not be NULL.
+ * @return true on success, false if memory allocation fails or if @p str
+ *         is NULL.
+ */
+bool string_prepend(t_string* str, const void* src);
+
+/**
  * @brief Prepend a t_string to another t_string.
  * @memberof s_string
+ * @deprecated Use \ref string_prepend instead.
  *
  * Inserts the contents of @p src at the beginning of the string @p str.
  * May reallocate the internal buffer to fit the new contents.
@@ -123,6 +160,7 @@ bool string_prepend_string(t_string* str, const t_string* src);
 /**
  * @brief Prepend a C-style string to @p str.
  * @memberof s_string
+ * @deprecated Use \ref string_prepend instead.
  *
  * Inserts the contents of @p cstr at the beginning of the string @p str.
  * May reallocate the internal buffer to fit the new contents.
@@ -248,8 +286,25 @@ bool string_push_char(t_string* s, char c);
 bool string_pop_char(t_string* s, char* out);
 
 /**
+ * @brief Insert raw data into @p s at position @p pos.
+ * @memberof s_string
+ *
+ * Characters from @p pos onward are shifted to make room for @p src.
+ * If @p pos is greater than the string size, the insertion fails and the
+ * function returns false.
+ *
+ * @param s Pointer to the string to modify. Must not be NULL.
+ * @param pos Index at which to insert. Must be <= current string size.
+ * @param src Pointer to the data to insert. Must not be NULL.
+ * @return true on success, false if allocation fails, @p s is NULL or
+ *         @p pos is out of bounds.
+ */
+bool string_insert(t_string* s, size_t pos, const void* src);
+
+/**
  * @brief Insert a t_string into @p s at position @p pos.
  * @memberof s_string
+ * @deprecated Use \ref string_insert instead.
  *
  * Characters from @p pos onward are shifted to make room for @p src.
  * If @p pos is greater than the string size, the insertion fails and the
@@ -266,6 +321,7 @@ bool string_insert_string(t_string* s, size_t pos, const t_string* src);
 /**
  * @brief Insert a C-style string into @p s at position @p pos.
  * @memberof s_string
+ * @deprecated Use \ref string_insert instead.
  *
  * Characters from @p pos onward are shifted to make room for @p cstr.
  * If @p pos is greater than the string size, the insertion fails and the
@@ -308,6 +364,25 @@ bool string_erase(t_string* s, size_t pos, size_t len);
  * @param s Pointer to the string to modify. Must not be NULL.
  * @param pos Position where replacement begins.
  * @param len Length of the text to replace.
+ * @param src Pointer to the data to insert in place of the erased text.
+ * @return true on success, false if allocation fails, @p s is NULL, or
+ *         @p pos is out of bounds.
+ */
+bool string_replace(t_string* s, size_t pos, size_t len, const void* src);
+
+/**
+ * @brief Replace a substring of @p s starting at @p pos for length @p len
+ * with @p src.
+ * @memberof s_string
+ * @deprecated Use \ref string_replace instead.
+ *
+ * This is equivalent to erasing the substring and inserting @p src at
+ * @p pos. The function may reallocate the buffer to accommodate the
+ * resulting string.
+ *
+ * @param s Pointer to the string to modify. Must not be NULL.
+ * @param pos Position where replacement begins.
+ * @param len Length of the text to replace.
  * @param src t_string to insert in place of the erased text.
  * @return true on success, false if allocation fails, @p s is NULL, or
  *         @p pos is out of bounds.
@@ -319,6 +394,7 @@ bool string_replace_string(t_string* s, size_t pos, size_t len,
  * @brief Replace a substring of @p s starting at @p pos for length @p len
  * with @p cstr.
  * @memberof s_string
+ * @deprecated Use \ref string_replace instead.
  *
  * This is equivalent to erasing the substring and inserting @p cstr at
  * @p pos. The function may reallocate the buffer to accommodate the
@@ -359,6 +435,20 @@ t_string* string_substr(const t_string* s, size_t pos, size_t len);
  * @memberof s_string
  *
  * @param s String to search in. Must not be NULL.
+ * @param needle Pointer to the data to find. Must not be NULL.
+ * @param start Index from where the search should begin.
+ * @return Index of the first occurrence of @p needle at or after @p start,
+ *         or -1 if not found. Returns -1 if @p s or @p needle is NULL.
+ */
+ssize_t string_find(const t_string* s, const void* needle, size_t start);
+
+/**
+ * @brief Find the first occurrence of @p needle in @p s starting at
+ * position @p start.
+ * @memberof s_string
+ * @deprecated Use \ref string_find instead.
+ *
+ * @param s String to search in. Must not be NULL.
  * @param needle t_string substring to find. If needle is empty returns @p
  *               start.
  * @param start Index from where the search should begin.
@@ -372,6 +462,7 @@ ssize_t string_find_string(const t_string* s, const t_string* needle,
  * @brief Find the first occurrence of @p needle in @p s starting at
  * position @p start.
  * @memberof s_string
+ * @deprecated Use \ref string_find instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle C-style substring to find. If needle is empty returns @p
@@ -387,6 +478,17 @@ ssize_t string_find_cstr(const t_string* s, const char* needle, size_t start);
  * @memberof s_string
  *
  * @param s String to search in. Must not be NULL.
+ * @param needle Pointer to the data to find. Must not be NULL.
+ * @return Index of the last occurrence of @p needle, or -1 if not found.
+ */
+ssize_t string_rfind(const t_string* s, const void* needle);
+
+/**
+ * @brief Find the last occurrence of @p needle in @p s.
+ * @memberof s_string
+ * @deprecated Use \ref string_rfind instead.
+ *
+ * @param s String to search in. Must not be NULL.
  * @param needle t_string substring to find. If needle is empty returns the
  *               last valid index (i.e. s->size).
  * @return Index of the last occurrence of @p needle, or -1 if not found.
@@ -396,6 +498,7 @@ ssize_t string_rfind_string(const t_string* s, const t_string* needle);
 /**
  * @brief Find the last occurrence of @p needle in @p s.
  * @memberof s_string
+ * @deprecated Use \ref string_rfind instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle C-style substring to find. If needle is empty returns the
@@ -487,17 +590,17 @@ int string_cmp(const t_string* a, const t_string* b);
 bool string_equals(const t_string* a, const t_string* b);
 
 /**
- * @brief Case-insensitive comparison of two strings.
+ * @brief Case-insensitive lexicographic comparison of two strings.
  * @memberof s_string
  *
  * Similar to string_cmp but treats characters case-insensitively.
  *
  * @param a First string.
  * @param b Second string.
- * @return true if the strings are equal when compared case-insensitively,
- *         false otherwise.
+ * @return Negative value if a < b, zero if a == b, positive value if
+ *         a > b when compared case-insensitively.
  */
-bool string_casecmp(const t_string* a, const t_string* b);
+int string_casecmp(const t_string* a, const t_string* b);
 
 /**
  * @brief Format a string with printf-like semantics and store the result in @p
@@ -530,3 +633,16 @@ bool string_format(t_string* s, const char* fmt, ...)
  *          and the vector itself to avoid memory leaks.
  */
 t_vec* string_split(const t_string* s, char sep);
+
+/**
+ * @brief Lightweight runtime validation of a t_string pointer.
+ * @memberof s_string
+ *
+ * Performs a quick, non-exhaustive check to determine if @p s appears to
+ * be a valid t_string created by this library.
+ *
+ * @param s Pointer to test.
+ * @return true if @p s appears to be a valid t_string created by the
+ *         library; false otherwise.
+ */
+bool string_tagged(const void* s);

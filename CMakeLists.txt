@@ -134,6 +134,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING PATTERN "*.h"
   PATTERN "macros.h" EXCLUDE
+  PATTERN "*.int.h" EXCLUDE
 )
 
 # Optional: install a CMake export and a package config file so downstream

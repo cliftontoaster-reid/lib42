@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   string_new.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/18 20:38:00 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/19 13:31:45 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/11/29 16:20:01 by lfiorell          #+#    #+#             */
+/*   Updated: 2025/11/29 16:20:01 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #include <stdlib.h>
 
@@ -30,6 +32,7 @@ t_string* string_new() {
   t_string* s = (t_string*)malloc(sizeof(t_string));
   if (!s) return NULL;
 
+  s->magic = STRING_MAGIC;
   s->size = 0;
   s->capacity = 0;
   s->data = NULL;
