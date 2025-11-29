@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:19:51 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 17:46:20 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 22:26:54 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 /**
  * @brief Insert a t_string into @p s at position @p pos.
  * @memberof s_string
- * @deprecated Use \ref string_insert instead.
  *
  * Characters from @p pos onward are shifted to make room for @p src.
  * If @p pos is greater than the string size, the insertion fails and the
@@ -49,7 +48,6 @@ bool string_insert_string(t_string* s, size_t pos, const t_string* src) {
 /**
  * @brief Insert a C-style string into @p s at position @p pos.
  * @memberof s_string
- * @deprecated Use \ref string_insert instead.
  *
  * Characters from @p pos onward are shifted to make room for @p cstr.
  * If @p pos is greater than the string size, the insertion fails and the

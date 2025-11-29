@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 14:40:30 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/29 17:13:34 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 22:25:14 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,6 @@ bool string_append(t_string* str, const void* src);
 /**
  * @brief Append a t_string to another t_string.
  * @memberof s_string
- * @deprecated Use \ref string_append instead.
  *
  * This function appends all bytes of @p src to the end of @p str.
  * It behaves like `string_append(dest, src->data)` but is provided
@@ -112,7 +111,6 @@ bool string_append_string(t_string* str, const t_string* src);
 /**
  * @brief Append a C-style string to @p str.
  * @memberof s_string
- * @deprecated Use \ref string_append instead.
  *
  * Appends the contents of @p cstr to the end of @p str. The function may
  * reallocate the internal buffer if needed to fit the additional data.
@@ -142,7 +140,6 @@ bool string_prepend(t_string* str, const void* src);
 /**
  * @brief Prepend a t_string to another t_string.
  * @memberof s_string
- * @deprecated Use \ref string_prepend instead.
  *
  * Inserts the contents of @p src at the beginning of the string @p str.
  * May reallocate the internal buffer to fit the new contents.
@@ -160,7 +157,6 @@ bool string_prepend_string(t_string* str, const t_string* src);
 /**
  * @brief Prepend a C-style string to @p str.
  * @memberof s_string
- * @deprecated Use \ref string_prepend instead.
  *
  * Inserts the contents of @p cstr at the beginning of the string @p str.
  * May reallocate the internal buffer to fit the new contents.
@@ -304,7 +300,6 @@ bool string_insert(t_string* s, size_t pos, const void* src);
 /**
  * @brief Insert a t_string into @p s at position @p pos.
  * @memberof s_string
- * @deprecated Use \ref string_insert instead.
  *
  * Characters from @p pos onward are shifted to make room for @p src.
  * If @p pos is greater than the string size, the insertion fails and the
@@ -321,7 +316,6 @@ bool string_insert_string(t_string* s, size_t pos, const t_string* src);
 /**
  * @brief Insert a C-style string into @p s at position @p pos.
  * @memberof s_string
- * @deprecated Use \ref string_insert instead.
  *
  * Characters from @p pos onward are shifted to make room for @p cstr.
  * If @p pos is greater than the string size, the insertion fails and the
@@ -374,7 +368,6 @@ bool string_replace(t_string* s, size_t pos, size_t len, const void* src);
  * @brief Replace a substring of @p s starting at @p pos for length @p len
  * with @p src.
  * @memberof s_string
- * @deprecated Use \ref string_replace instead.
  *
  * This is equivalent to erasing the substring and inserting @p src at
  * @p pos. The function may reallocate the buffer to accommodate the
@@ -394,7 +387,6 @@ bool string_replace_string(t_string* s, size_t pos, size_t len,
  * @brief Replace a substring of @p s starting at @p pos for length @p len
  * with @p cstr.
  * @memberof s_string
- * @deprecated Use \ref string_replace instead.
  *
  * This is equivalent to erasing the substring and inserting @p cstr at
  * @p pos. The function may reallocate the buffer to accommodate the
@@ -446,7 +438,6 @@ ssize_t string_find(const t_string* s, const void* needle, size_t start);
  * @brief Find the first occurrence of @p needle in @p s starting at
  * position @p start.
  * @memberof s_string
- * @deprecated Use \ref string_find instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle t_string substring to find. If needle is empty returns @p
@@ -462,7 +453,6 @@ ssize_t string_find_string(const t_string* s, const t_string* needle,
  * @brief Find the first occurrence of @p needle in @p s starting at
  * position @p start.
  * @memberof s_string
- * @deprecated Use \ref string_find instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle C-style substring to find. If needle is empty returns @p
@@ -486,7 +476,6 @@ ssize_t string_rfind(const t_string* s, const void* needle);
 /**
  * @brief Find the last occurrence of @p needle in @p s.
  * @memberof s_string
- * @deprecated Use \ref string_rfind instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle t_string substring to find. If needle is empty returns the
@@ -498,7 +487,6 @@ ssize_t string_rfind_string(const t_string* s, const t_string* needle);
 /**
  * @brief Find the last occurrence of @p needle in @p s.
  * @memberof s_string
- * @deprecated Use \ref string_rfind instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle C-style substring to find. If needle is empty returns the

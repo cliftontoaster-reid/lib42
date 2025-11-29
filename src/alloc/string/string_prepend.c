@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:20:06 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 16:20:54 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 22:26:53 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 /**
  * @brief Prepend a t_string to another t_string.
  * @memberof s_string
- * @deprecated Use \ref string_prepend instead.
  *
  * Inserts the contents of @p src at the beginning of the string @p str.
  * May reallocate the internal buffer to fit the new contents.
@@ -41,7 +40,6 @@ bool string_prepend_string(t_string* str, const t_string* src) {
 /**
  * @brief Prepend a C-style string to @p str.
  * @memberof s_string
- * @deprecated Use \ref string_prepend instead.
  *
  * Inserts the contents of @p cstr at the beginning of the string @p str.
  * May reallocate the internal buffer to fit the new contents.

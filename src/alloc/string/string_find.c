@@ -6,10 +6,9 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:19:45 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 16:23:48 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 22:26:55 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include <stddef.h>
 #include <sys/types.h>
@@ -21,7 +20,6 @@
  * @brief Find the first occurrence of @p needle in @p s starting at
  * position @p start.
  * @memberof s_string
- * @deprecated Use \ref string_find instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle t_string substring to find. If needle is empty returns @p
@@ -30,7 +28,8 @@
  * @return Index of the first occurrence of @p needle at or after @p start,
  *         or -1 if not found. Returns -1 if @p s or @p needle is NULL.
  */
-ssize_t string_find_string(const t_string* s, const t_string* needle, size_t start) {
+ssize_t string_find_string(const t_string* s, const t_string* needle,
+                           size_t start) {
   if (s == NULL || needle == NULL) return -1;
   if (needle->size == 0) return (start <= s->size) ? (ssize_t)start : -1;
   if (needle->size > s->size) return -1;
@@ -47,7 +46,6 @@ ssize_t string_find_string(const t_string* s, const t_string* needle, size_t sta
  * @brief Find the first occurrence of @p needle in @p s starting at
  * position @p start.
  * @memberof s_string
- * @deprecated Use \ref string_find instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle C-style substring to find. If needle is empty returns @p

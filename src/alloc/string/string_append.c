@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:19:37 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 20:20:03 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 22:26:56 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 /**
  * @brief Append a t_string to another t_string.
  * @memberof s_string
- * @deprecated Use \ref string_append instead.
  *
  * This function appends all bytes of @p src to the end of @p str.
  * It behaves like `string_append(dest, src->data)` but is provided
@@ -48,7 +47,6 @@ bool string_append_string(t_string* str, const t_string* src) {
 /**
  * @brief Append a C-style string to @p str.
  * @memberof s_string
- * @deprecated Use \ref string_append instead.
  *
  * Appends the contents of @p cstr to the end of @p str. The function may
  * reallocate the internal buffer if needed to fit the additional data.

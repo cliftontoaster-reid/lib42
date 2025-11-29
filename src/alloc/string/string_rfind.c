@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:20:17 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 16:24:42 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 22:26:37 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 /**
  * @brief Find the last occurrence of @p needle in @p s.
  * @memberof s_string
- * @deprecated Use \ref string_rfind instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle t_string substring to find. If needle is empty returns the
@@ -47,7 +46,6 @@ ssize_t string_rfind_string(const t_string* s, const t_string* needle) {
 /**
  * @brief Find the last occurrence of @p needle in @p s.
  * @memberof s_string
- * @deprecated Use \ref string_rfind instead.
  *
  * @param s String to search in. Must not be NULL.
  * @param needle C-style substring to find. If needle is empty returns the
