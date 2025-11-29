@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   io_push_uint.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 16:58:57 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/20 11:08:15 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/29 20:20:03 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ ssize_t io_push_uint(int fd, uint64_t n) {
     buffer[j] = buffer[i - j - 1];
     buffer[i - j - 1] = temp;
   }
+  buffer[i] = '\0';
   return io_push_cstr(fd, buffer);
 }

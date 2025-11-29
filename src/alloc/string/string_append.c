@@ -6,10 +6,9 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:19:37 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 16:19:39 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/29 20:20:03 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -90,7 +89,7 @@ bool string_append_cstr(t_string* str, const char* cstr) {
 bool string_append(t_string* str, const void* src) {
   if (str == NULL || src == NULL) return false;
 
-  if (string_tagged(str)) {
+  if (string_tagged(src)) {
     return string_append_string(str, (const t_string*)src);
   } else {
     return string_append_cstr(str, (const char*)src);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   basic.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:00:19 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/20 11:41:56 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/29 19:05:59 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ ssize_t io_push_cstr(int fd, const char* str);
  * @param str The \ref t_string to write.
  * @return The number of bytes written, or -1 on error.
  */
-ssize_t io_push_cstring(int fd, const t_string* str);
+ssize_t io_push_string(int fd, const t_string* str);
 
 /**
  * @brief Writes up to n characters from the C-style string to the file
@@ -106,9 +106,11 @@ ssize_t io_push_hex(int fd, uint64_t n, bool uppercase);
  * @ingroup io::write
  * @param fd The file descriptor to write to.
  * @param ptr The pointer whose address to write.
+ * @param uppercase If true, uses uppercase letters (A-F); otherwise, lowercase
+ * (a-f).
  * @return The number of bytes written, or -1 on error.
  */
-ssize_t io_push_ptr(int fd, const void* ptr);
+ssize_t io_push_ptr(int fd, const void* ptr, bool uppercase);
 
 /**
  * @brief Writes a float as a string with specified precision to the file
@@ -119,7 +121,7 @@ ssize_t io_push_ptr(int fd, const void* ptr);
  * @param precision The number of decimal places to include.
  * @return The number of bytes written, or -1 on error.
  */
-ssize_t io_push_float(int fd, float n, size_t precision);
+ssize_t io_push_float(int fd, float n, int precision);
 
 /**
  * @brief Writes a double as a string with specified precision to the file
@@ -130,7 +132,7 @@ ssize_t io_push_float(int fd, float n, size_t precision);
  * @param precision The number of decimal places to include.
  * @return The number of bytes written, or -1 on error.
  */
-ssize_t io_push_double(int fd, double n, size_t precision);
+ssize_t io_push_double(int fd, double n, int precision);
 
 /**
  * @brief Writes a long double as a string with specified precision to the file
@@ -141,7 +143,7 @@ ssize_t io_push_double(int fd, double n, size_t precision);
  * @param precision The number of decimal places to include.
  * @return The number of bytes written, or -1 on error.
  */
-ssize_t io_push_ldouble(int fd, long double n, size_t precision);
+ssize_t io_push_ldouble(int fd, long double n, int precision);
 
 /**
  * @brief Writes n bytes from the buffer to the file descriptor.
