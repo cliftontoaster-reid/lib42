@@ -17,6 +17,8 @@ include(GNUInstallDirs)
 option(CODE_COVERAGE "Enable coverage build (adds --coverage flags)" OFF)
 
 if(CODE_COVERAGE)
+  # Coverage requires tests to be built
+  set(BUILD_TESTING ON CACHE BOOL "Build tests" FORCE)
   if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     message(STATUS "Building with coverage instrumentation enabled")
     # Use -O0 to avoid optimization removing code paths; include debug info.
