@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 11:07:39 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 11:21:42 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/29 23:50:16 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,40 @@
 
 #include <stddef.h>
 
+/**
+ * @brief Singly linked list node structure.
+ *
+ * \ref t_list represents a single node in a singly linked list. Each node
+ * contains a pointer to arbitrary content and a pointer to the next node
+ * in the list.
+ *
+ * @warning It is highly discouraged to manipulate the internal pointers
+ *          directly. Use the provided list functions to ensure correct
+ *          behavior and to avoid memory corruption.
+ */
 typedef struct s_list {
+  /// @publicsection
+
+  /// @brief Pointer to the content stored in the node.
+  ///
+  /// This pointer is NOT owned by the t_list instance and should be
+  /// provided a del function when freeing the list if the content needs to be
+  /// freed.
+  ///
+  /// @warning If a del function is not provided, the content will not be freed
+  ///          when the node is deleted, potentially causing memory leaks.
+  ///          see \ref ft_lstdelone and \ref ft_lstclear for details.
+  ///
+  /// @see ft_lstdelone
+  /// @see ft_lstclear
   void* content;
+  /// @brief Pointer to the next node in the list.
+  ///
+  /// This pointer is NULL if this node is the last in the list.
+  ///
+  /// @warning Do not modify this field directly. If a node has this pointer
+  ///          changed to a NULL for example, the children nodes will be left
+  ///          dangling and inaccessible, causing memory leaks.
   struct s_list* next;
 } t_list;
 

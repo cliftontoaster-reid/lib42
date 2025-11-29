@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 14:40:30 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/29 22:25:14 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 00:02:53 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,25 @@
 
 #include "42/alloc/vec.h"
 
-/** @private Magic number to identify valid t_string instances. */
-#define STRING_MAGIC 0x53545017U /* "STR<non-printable>" */
+/**
+ * @private Magic number to identify valid t_string instances.
+ *
+ * While not the most robust method, this magic number has been made
+ * to be most likely never seen in a valid string data buffer.
+ *
+ * The simple presence of two non-consecutive printable characters, with
+ * one of them being a null byte, makes it unlikely to appear in normal
+ * string data that errors might expose.
+ *
+ * The value translates to the ASCII characters `S`, `\0`, `P`, and
+ * `\x17`.
+ *
+ * @note If you do not trust this mechanism, or need every bit of performance,
+ *     you can always avoid using functions that connect with your t_string
+ *     or c strings directly. Such functions include \ref string_replace_cstr,
+ *     \ref string_insert_cstr, \ref string_append_cstr, etc.
+ */
+#define STRING_MAGIC 0x53005017U
 
 /**
  * @brief Variable-length string structure.
@@ -29,20 +46,64 @@
  * dynamically resizable string. It maintains its own internal buffer,
  * size, and capacity to efficiently handle string operations.
  *
- * \note While it provides convenience functions for common string
+ * @note While it provides convenience functions for common string
  * manipulations, it is highly discouraged to manipulate the internal data
  * directly. More functions will be added later on if needed for you to
  * manipulate strings safely.
  */
 typedef struct s_string {
-  /// @private Magic number to identify valid t_string instances.
+  /// @privatesection
+
+  /// @brief Magic number to identify valid t_string instances.
+  ///
+  /// This field is used internally to verify the integrity of the string
+  /// instance.
+  /// @warning Do not modify this field directly.
+  /// @see STRING_MAGIC
   uint32_t magic;
-  /// @private Pointer to the internal character buffer.
-  char* data;
-  /// @private Current size of the string (number of valid characters).
-  size_t size;
-  /// @private Current capacity of the internal buffer.
+  /// @brief Current capacity of the internal buffer.
+  ///
+  /// @note This capacity includes space for the null-terminator.
+  ///
+  /// @warning Do not modify this field directly. Use \ref string_reserve.
+  ///          This is unlike \ref size, which may be modified to your
+  ///          heart's content. As all of the functions made for t_string
+  ///          will make sure to call \ref string_reserve as needed.
   size_t capacity;
+
+  /// @publicsection
+
+  /// @brief Current size of the string (number of valid characters).
+  ///
+  /// @note This size does not include the null-terminator. Meaning that
+  ///       it is valid and safe to read until data[size], which will be
+  ///       the null terminator. Unless you do use this in lua, unlikely as
+  ///       that may be, where this would be considered out of bounds, as
+  ///       lua strings do not need to be null-terminated, and indexes
+  ///       start at 1, not 0.
+  ///
+  /// @warning Avoid modifying this field directly. It is safe to increase so,
+  ///          and can cause unexpected behavior if you set it bellow the
+  ///          actual size of the string. Considering the little benefits I
+  ///          see in doing direct modification of this field, I highly
+  ///          discourage it.
+  size_t size;
+  /// @brief Pointer to the internal character buffer.
+  ///
+  /// This buffer is null-terminated but may contain null bytes within the
+  /// string data. The buffer is owned by the t_string instance and should
+  /// not be modified directly.
+  ///
+  /// @warning While perfectly fine to modify the contents of this buffer,
+  ///          as long as you do not move the position of the null terminator
+  ///          or exceed the allocated capacity, it is highly discouraged to
+  ///          manipulate this field directly. Use the provided string
+  ///          functions to ensure correct behavior and to avoid memory
+  ///          corruption. If needed however, please make ample use of
+  ///          \ref string_reserve to ensure enough capacity before writing
+  ///          to this buffer, as if the capacity was already enough, it will
+  ///          avoid unnecessary reallocations, so should not be feared.
+  char* data;
 } t_string;
 
 /**
