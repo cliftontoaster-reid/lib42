@@ -157,7 +157,7 @@ jobs:
           cd build
           ctest --output-on-failure
           geninfo . --output-filename coverage.info --ignore-errors mismatch --memory 0
-          lcov --ignore-errors unused --remove coverage.info '/usr/*' --output-file coverage.info
+          lcov --ignore-errors unused --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
           lcov --list coverage.info || true
 
       - name: Upload Coverage to Codecov
