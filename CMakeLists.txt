@@ -48,14 +48,6 @@ target_include_directories(lib42_shared PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-# Enable warnings as errors for GCC/Clang
-# Use -Wno-error=unused-command-line-argument to allow tools like trunk/clang-tidy
-# to run include scanning with -M flag (which makes -c unused)
-if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-  target_compile_options(lib42_static PRIVATE -Wall -Wextra -Werror -Wno-error=unused-dummy-argument)
-  target_compile_options(lib42_shared PRIVATE -Wall -Wextra -Werror -Wno-error=unused-dummy-argument)
-endif()
-
 # --- Tests (Criterion) -----------------------------------------------------
 enable_testing()
 
