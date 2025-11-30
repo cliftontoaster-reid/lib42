@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 char* ft_strpbrk(const char* s, const char* accept) {
   size_t i = 0;

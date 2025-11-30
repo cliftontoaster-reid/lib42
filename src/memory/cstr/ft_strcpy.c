@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 char* ft_strcpy(char* dest, const char* src) {
   size_t i = 0;

@@ -7,7 +7,7 @@ cli:
 plugins:
   sources:
     - id: trunk
-      ref: v1.7.3
+      ref: v1.7.4
       uri: https://github.com/trunk-io/plugins
 # Many linters and tools depend on runtimes - configure them here. (https://docs.trunk.io/runtimes)
 runtimes:
@@ -16,15 +16,24 @@ runtimes:
     - python@3.10.8
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
+  compile_commands: json
+  definitions:
+    - name: clang-tidy
+      # Disable sandboxing entirely - parentheses in path break Trunk's file copying
+      include_scanner_type: none
+      commands:
+        - name: lint
+          run: clang-tidy --export-fixes=${tmpfile} ${target} -p ${workspace}/compile_commands.json
+          run_from: workspace
   enabled:
-    - actionlint@1.7.8
-    - checkov@3.2.490
+    - actionlint@1.7.9
+    - checkov@3.2.495
     - clang-format@16.0.3
     - clang-tidy@16.0.3
     - git-diff-check
-    - markdownlint@0.45.0
-    - prettier@3.6.2
-    - trufflehog@3.90.13
+    - markdownlint@0.46.0
+    - prettier@3.7.3
+    - trufflehog@3.91.1
     - yamllint@1.37.1
 actions:
   enabled:

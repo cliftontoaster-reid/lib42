@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 /*
  * Tests for ft_memset. We compare results with the standard libc memset where

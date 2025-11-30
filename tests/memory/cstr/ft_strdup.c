@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: copilot <copilot@invalid>                   +#+  +:+       +#+ */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 10:12:00 by copilot           #+#    #+#             */
-/*   Updated: 2025/11/07 10:12:00 by copilot          ###   ########.fr       */
+/*   Created: 2025/11/07 10:12:00 by lfiorell@st           #+#    #+# */
+/*   Updated: 2025/11/07 14:11:58 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 Test(ft_strdup, duplicate_simple_string) {
   const char* src = "hello";

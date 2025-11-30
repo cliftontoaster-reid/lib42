@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: copilot <copilot@example.com>               +#+  +:+       +#+ */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 11:20:00 by copilot           #+#    #+#             */
-/*   Updated: 2025/11/07 11:20:00 by copilot          ###   ########.fr       */
+/*   Created: 2025/11/07 11:20:00 by lfiorell@st           #+#    #+# */
+/*   Updated: 2025/11/07 14:10:20 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 
-#include "alloc/list.h"
+#include "42/alloc/list.h"
 
 t_list* ft_lstmap(t_list* lst, void* (*f)(void*), void (*del)(void*)) {
   t_list* new_list = NULL;
@@ -23,6 +23,10 @@ t_list* ft_lstmap(t_list* lst, void* (*f)(void*), void (*del)(void*)) {
   if (!lst || !f) return NULL;
   while (lst) {
     new_content = f(lst->content);
+    if (!new_content) {
+      ft_lstclear(&new_list, del);
+      return NULL;
+    }
     new_node = ft_lstnew(new_content);
     if (!new_node) {
       if (del && new_content) del(new_content);

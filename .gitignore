@@ -27,3 +27,8 @@ CMakeUserPresets.json
 *.iml
 /.vscode/
 *.code-workspace
+/dist/
+*.pc
+*.in
+/Doxyfile
+*.cmake

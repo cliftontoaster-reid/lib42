@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 char* ft_strstr(const char* haystack, const char* needle) {
   if (!*needle) return (char*)haystack;

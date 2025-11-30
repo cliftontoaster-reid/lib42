@@ -13,6 +13,7 @@ on:
       - "**.h"
       - CMakeLists.txt
       - .github/workflows/ci.yml
+      - .trunk/trunk.yaml
   pull_request:
     branches:
       - main
@@ -22,12 +23,47 @@ on:
       - "**.h"
       - CMakeLists.txt
       - .github/workflows/ci.yml
+      - .trunk/trunk.yaml
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get purge -y man-db
+          sudo apt-get install -y ninja-build meson libcriterion-dev
+          export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+' )
+          wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
+          sudo mkdir /opt/meson
+          sudo tar xf meson.tar.gz --strip-components=1 -C /opt/meson
+          sudo mv /opt/meson/meson.py /opt/meson/meson
+          sudo ln -s /opt/meson/meson /usr/local/bin/meson
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install meson ninja criterion pkg-config
+          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:$(brew --prefix)/opt/criterion/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Generate Compilation Database
+        run: |
+          mkdir build
+          cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=ON
+          cp build/compile_commands.json .
+
+      - name: Make Compilation Database Paths Relative
+        run: |
+          if [ -f ./compile_commands.json ]; then
+            python3 scripts/make_compile_commands_relative.py
+          fi
 
       - name: Trunk Code Quality
         uses: trunk-io/trunk-action@v1
@@ -38,7 +74,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     concurrency:
       group: ci-${{ matrix.os }}
@@ -49,48 +85,40 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
-      - name: Set up Python (for Meson)
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Install Meson and Ninja
-        run: pip install meson ninja
-
-      - name: Build and Install Criterion (Linux / macOS)
-        if: runner.os != 'Windows'
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
-          cd /tmp/criterion
-          meson setup builddir --prefix=/usr/local
-          meson compile -C builddir
-          sudo $(which meson) install -C builddir
+          sudo apt-get update -y
+          sudo apt-get purge -y man-db
+          sudo apt-get install -y ninja-build meson libcriterion-dev
 
-      - name: Update shared library cache (Linux)
-        if: runner.os == 'Linux'
-        run: sudo ldconfig
+          export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+')
+          wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
+          sudo mkdir /opt/meson
+          sudo tar xf meson.tar.gz --strip-components=1 -C /opt/meson
+          sudo mv /opt/meson/meson.py /opt/meson/meson
+          sudo ln -s /opt/meson/meson /usr/local/bin/meson
+
+      - name: Install dependencies (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install meson ninja criterion pkg-config
+          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig:$(brew --prefix)/opt/criterion/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
       - name: Configure CMake
         run: |
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -G Ninja -DBUILD_TESTING=ON
 
       - name: Build (Linux / macOS)
-        if: runner.os != 'Windows'
-        run: cmake --build build --config Release -- -j$(nproc)
-
-      - name: Build (Windows)
-        if: runner.os == 'Windows'
-        run: cmake --build build --config Release -- /m
+        run: cmake --build build
 
       - name: Run Tests
-        if: runner.os != 'Windows'
         run: |
           cd build
           ctest --output-on-failure  --output-junit test-results.xml
 
       - name: Upload Test Results
-        if: runner.os != 'Windows'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -106,30 +134,26 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@latest
 
-      - name: Set up Python (for Meson)
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.x
-
-      - name: Install Meson and Ninja
-        run: pip install meson ninja
-
-      - name: Build and Install Criterion
+      - name: Install dependencies
         run: |
-          git clone --depth 1 https://github.com/Snaipe/Criterion.git /tmp/criterion
-          cd /tmp/criterion
-          meson setup builddir --prefix=/usr/local
-          meson compile -C builddir
-          sudo $(which meson) install -C builddir
-          sudo ldconfig
+          sudo apt-get update -y
+          sudo apt-get purge -y man-db
+          sudo apt-get install -y ninja-build meson libcriterion-dev
+
+          export MESON_VERSION=$(curl -s "https://api.github.com/repos/mesonbuild/meson/releases/latest" | grep -Po '"tag_name": "\K[0-9.]+')
+          wget -qO meson.tar.gz https://github.com/mesonbuild/meson/releases/latest/download/meson-${MESON_VERSION}.tar.gz
+          sudo mkdir /opt/meson
+          sudo tar xf meson.tar.gz --strip-components=1 -C /opt/meson
+          sudo mv /opt/meson/meson.py /opt/meson/meson
+          sudo ln -s /opt/meson/meson /usr/local/bin/meson
 
       - name: Configure CMake
         run: |
           mkdir build
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCODE_COVERAGE=ON
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCODE_COVERAGE=ON -G Ninja
 
       - name: Build
-        run: cmake --build build --config Release -- -j$(nproc)
+        run: cmake --build build
 
       - name: Install lcov
         run: |
@@ -141,7 +165,7 @@ jobs:
           cd build
           ctest --output-on-failure
           geninfo . --output-filename coverage.info --ignore-errors mismatch --memory 0
-          lcov --ignore-errors unused --remove coverage.info '/usr/*' --output-file coverage.info
+          lcov --ignore-errors unused --remove coverage.info '/usr/*' '*/tests/*' --output-file coverage.info
           lcov --list coverage.info || true
 
       - name: Upload Coverage to Codecov

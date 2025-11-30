@@ -12,7 +12,7 @@
 
 #include <criterion/criterion.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 // -zero_standard_region
 // -zero_length_no_change

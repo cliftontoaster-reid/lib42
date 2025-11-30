@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_islower.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: copilot <copilot@invalid>                   +#+  +:+       +#+ */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 10:00:00 by copilot           #+#    #+#             */
-/*   Updated: 2025/11/07 10:00:00 by copilot          ###   ########.fr       */
+/*   Created: 2025/11/07 10:00:00 by lfiorell@st       #+#    #+#             */
+/*   Updated: 2025/11/07 14:16:42 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <criterion/criterion.h>
 #include <ctype.h>
 
-#include "ctype/ctype.h"
+#include "42/ctype/ctype.h"
 
 Test(ft_islower, basics) {
   cr_assert(ft_islower('a'));

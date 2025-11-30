@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 char* ft_strcat(char* dest, const char* src) {
   size_t dest_len = ft_strlen(dest);

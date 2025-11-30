@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: copilot <copilot@invalid>                   +#+  +:+       +#+ */
+/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 10:05:00 by copilot           #+#    #+#             */
-/*   Updated: 2025/11/07 10:05:00 by copilot          ###   ########.fr       */
+/*   Created: 2025/11/07 10:05:00 by lfiorell@st           #+#    #+# */
+/*   Updated: 2025/11/07 14:11:58 by lfiorell@st      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <criterion/criterion.h>
 #include <string.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 Test(ft_memcmp, equal_buffers_returns_zero) {
   unsigned char a[] = {1, 2, 3, 4, 5};

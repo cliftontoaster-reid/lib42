@@ -7,6 +7,7 @@
 [![Stars](https://img.shields.io/github/stars/cliftontoaster-reid/lib42?style=flat)](https://github.com/cliftontoaster-reid/lib42/stargazers)
 [![Issues](https://img.shields.io/github/issues/cliftontoaster-reid/lib42)](https://github.com/cliftontoaster-reid/lib42/issues)
 [![Last commit](https://img.shields.io/github/last-commit/cliftontoaster-reid/lib42)](https://github.com/cliftontoaster-reid/lib42/commits)
+![Test Coverage](https://img.shields.io/codecov/c/github/cliftontoaster-reid/lib42)
 
 A comprehensive C library inspired by 42 school's libft, offering a wide range of utilities for memory management, string manipulation, data structures, and more.
 

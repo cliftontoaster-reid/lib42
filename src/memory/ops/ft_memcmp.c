@@ -12,7 +12,7 @@
 
 #include <stddef.h>
 
-#include "memory/ops.h"
+#include "42/memory/ops.h"
 
 int ft_memcmp(const void* s1, const void* s2, size_t n) {
   const unsigned char* ptr1 = (const unsigned char*)s1;

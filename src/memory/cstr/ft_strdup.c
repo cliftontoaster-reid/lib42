@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 
-#include "memory/cstr.h"
+#include "42/memory/cstr.h"
 
 char* ft_strdup(const char* s) {
   size_t len = ft_strlen(s);
