@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:56:54 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/30 14:57:02 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 15:44:16 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,5 @@ void map_clear(t_map* m) {
     current = next;
   }
   m->entries = NULL;
+  m->size = 0;
 }

@@ -3,26 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   map_remove_cstr.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>               +#+  +:+       +#+
+ */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/30 14:54:40 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/30 15:46:20 by lfiorell         ###   ########.fr       */
+/*   Created: 2025/11/30 16:52:00 by lfiorell           #+#    #+# */
+/*   Updated: 2025/11/30 16:52:00 by lfiorell          ###   ########.fr */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <criterion/criterion.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 
-#include "42/alloc/map.int.h"
-#include "42/memory/cstr.h"
+#include "42/alloc/map.h"
 
-int map_remove_cstr(t_map* m, const char* key_cstr) {
-  if (m == NULL || key_cstr == NULL) {
-    errno = EINVAL;
-    return false;
-  }
-
-  size_t key_size = ft_strlen(key_cstr) + 1; /* include null terminator */
-
-  return map_remove(m, key_cstr, key_size);
+Test(map_remove_cstr, remove_cstr_existing_removes_and_frees_owned) {
+  t_map* m = map_create(0, 0, NULL);
+  int val = 42;
+  cr_assert(map_set_cstr(m, "rm_me", &val, sizeof(val), 0, NULL));
+  cr_assert(map_remove_cstr(m, "rm_me"));
+  size_t out;
+  cr_assert_null(map_get_cstr(m, "rm_me", &out));
+  map_free(m);
 }
