@@ -78,7 +78,7 @@ size_t spy_iter_count(void) { return s_spy_iter_count; }
 void spy_iter_reset(void) { s_spy_iter_count = 0; }
 
 /* Assertions */
-int assert_list_ints(t_list* lst, int expected[], size_t size) {
+int assert_list_ints(t_list* lst, const int expected[], size_t size) {
   size_t i = 0;
   t_list* cur = lst;
   while (cur && i < size) {

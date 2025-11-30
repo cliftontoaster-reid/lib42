@@ -37,4 +37,4 @@ size_t spy_iter_count(void);
 void spy_iter_reset(void);
 
 /* Assertions */
-int assert_list_ints(t_list* lst, int expected[], size_t size);
+int assert_list_ints(t_list* lst, const int expected[], size_t size);
