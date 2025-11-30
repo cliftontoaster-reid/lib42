@@ -59,6 +59,12 @@ jobs:
           cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_TESTING=ON
           cp build/compile_commands.json .
 
+      - name: Make Compilation Database Paths Relative
+        run: |
+          if [ -f ./compile_commands.json ]; then
+            python3 scripts/make_compile_commands_relative.py
+          fi
+
       - name: Trunk Code Quality
         uses: trunk-io/trunk-action@v1
 
