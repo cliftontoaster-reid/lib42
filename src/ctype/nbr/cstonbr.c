@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstonbr.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 15:32:27 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 15:55:01 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ bool cstonbr(const char* str, int* out) {
   bool negative = false;
 
   while (ft_isspace(*str)) str++;
-  while (*str == '+' || *str == '-') {
-    if (*str == '-') negative = !negative;
+  if (*str == '+' || *str == '-') {
+    if (*str == '-') negative = true;
     str++;
   }
   if (!ft_isdigit(*str)) return false;
@@ -31,13 +31,15 @@ bool cstonbr(const char* str, int* out) {
     unsigned int digit = (unsigned int)(*str - '0');
 
     value = value * 10 + digit;
-    if (negative && value > INT_MAX) return false;
+    if (negative && value > (unsigned int)INT_MAX + 1) return false;
     if (!negative && value > INT_MAX) return false;
     str++;
   }
+  while (ft_isspace(*str)) str++;
+  if (*str != '\0') return false;
 
   if (negative) {
-    *out = (int)(-value);
+    *out = (int)(-(int)value);
   } else {
     *out = (int)value;
   }

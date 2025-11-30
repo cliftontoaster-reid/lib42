@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstounbr.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 15:56:01 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 15:56:20 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ bool cstounbr(const char* str, unsigned int* out) {
   unsigned int value = 0;
 
   while (ft_isspace(*str)) str++;
-  while (*str == '+') str++;
+  if (*str == '+')
+    str++;
+  else if (*str == '-')
+    return false;
   if (!ft_isdigit(*str)) return false;
 
   while (ft_isdigit(*str)) {
@@ -32,6 +35,8 @@ bool cstounbr(const char* str, unsigned int* out) {
     value = value * 10 + digit;
     str++;
   }
+  while (ft_isspace(*str)) str++;
+  if (*str != '\0') return false;
 
   *out = value;
   return true;

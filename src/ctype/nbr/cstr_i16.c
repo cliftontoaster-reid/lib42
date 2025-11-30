@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstr_i16.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 16:01:24 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 16:04:36 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,16 @@ char* cstr_i16(int16_t n) {
     neg = false;
   }
 
-  static char buffer[6];
-  int index = 5;
+  static char buffer[7];
+  int index = 6;
   buffer[index--] = '\0';
-  while (abs > 0) {
-    buffer[index--] = (char)((abs % 10) + '0');
-    abs /= 10;
+  if (abs == 0) {
+    buffer[index--] = '0';
+  } else {
+    while (abs > 0) {
+      buffer[index--] = (char)((abs % 10) + '0');
+      abs /= 10;
+    }
   }
   if (neg) {
     buffer[index--] = '-';

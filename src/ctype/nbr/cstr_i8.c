@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstr_i8.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 15:56:59 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 16:03:09 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,13 @@ char* cstr_i8(int8_t n) {
   static char buffer[5];
   int index = 4;
   buffer[index--] = '\0';
-  while (abs > 0) {
-    buffer[index--] = (char)((abs % 10) + '0');
-    abs /= 10;
+  if (abs == 0) {
+    buffer[index--] = '0';
+  } else {
+    while (abs > 0) {
+      buffer[index--] = (char)((abs % 10) + '0');
+      abs /= 10;
+    }
   }
   if (neg) {
     buffer[index--] = '-';

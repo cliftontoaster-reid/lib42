@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstou8.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 15:35:47 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 15:54:38 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ bool cstou8(const char* str, uint8_t* out) {
   uint16_t value = 0;
 
   while (ft_isspace(*str)) str++;
-  while (*str == '+') str++;
+  if (*str == '+')
+    str++;
+  else if (*str == '-')
+    return false;
   if (!ft_isdigit(*str)) return false;
 
   while (ft_isdigit(*str)) {
@@ -30,6 +33,8 @@ bool cstou8(const char* str, uint8_t* out) {
     if (value > UINT8_MAX) return false;
     str++;
   }
+  while (ft_isspace(*str)) str++;
+  if (*str != '\0') return false;
 
   *out = (uint8_t)value;
   return true;

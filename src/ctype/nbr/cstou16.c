@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstou16.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 15:39:43 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 15:54:30 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ bool cstou16(const char* str, uint16_t* out) {
   uint32_t value = 0;
 
   while (ft_isspace(*str)) str++;
-  while (*str == '+') str++;
+  if (*str == '+')
+    str++;
+  else if (*str == '-')
+    return false;
   if (!ft_isdigit(*str)) return false;
 
   while (ft_isdigit(*str)) {
@@ -30,6 +33,8 @@ bool cstou16(const char* str, uint16_t* out) {
     if (value > UINT16_MAX) return false;
     str++;
   }
+  while (ft_isspace(*str)) str++;
+  if (*str != '\0') return false;
 
   *out = (uint16_t)value;
   return true;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cstoi16.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 15:28:49 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/07 15:55:33 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:22:26 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ bool cstoi16(const char* str, int16_t* out) {
   bool negative = false;
 
   while (ft_isspace(*str)) str++;
-  while (*str == '+' || *str == '-') {
-    if (*str == '-') negative = !negative;
+  if (*str == '+' || *str == '-') {
+    if (*str == '-') negative = true;
     str++;
   }
   if (!ft_isdigit(*str)) return false;
@@ -31,13 +31,15 @@ bool cstoi16(const char* str, int16_t* out) {
     uint16_t digit = (uint16_t)(*str - '0');
 
     value = value * 10 + digit;
-    if (negative && value > INT16_MAX) return false;
-    if (!negative && value >= INT16_MAX) return false;
+    if (negative && value > (uint16_t)INT16_MAX + 1) return false;
+    if (!negative && value > INT16_MAX) return false;
     str++;
   }
+  while (ft_isspace(*str)) str++;
+  if (*str != '\0') return false;
 
   if (negative) {
-    *out = (int16_t)(-value);
+    *out = (int16_t)(-(int16_t)value);
   } else {
     *out = (int16_t)value;
   }
