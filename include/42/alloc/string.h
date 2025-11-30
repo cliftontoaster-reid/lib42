@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 14:40:30 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/30 00:02:53 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 15:18:06 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,24 @@ typedef struct s_string {
  *
  * @param cstr Source C-string to copy. May be NULL, in which case an empty
  *             string is returned.
+ *
  * @return Pointer to a newly allocated t_string on success, or NULL if
  *         allocation fails.
- * @warning This function allocates memory using malloc. The caller takes
- *          ownership of the returned t_string and must free it using
- *          \ref string_free to avoid a memory leak.
+ *
+ * @warning The caller owns the returned t_string and must free it using
+ *          string_free() to avoid memory leaks.
+ *
+ * @par Example
+ * @code
+ * t_string* greeting = string_from("Hello, World!");
+ * printf("%s\n", string_cstr(greeting));  // prints: Hello, World!
+ * string_free(greeting);
+ *
+ * // Empty string from NULL
+ * t_string* empty = string_from(NULL);
+ * printf("size: %zu\n", empty->size);  // prints: size: 0
+ * string_free(empty);
+ * @endcode
  */
 t_string* string_from(const char* cstr);
 
@@ -132,9 +145,18 @@ t_string* string_from(const char* cstr);
  *
  * @return Pointer to a newly allocated t_string on success, or NULL if
  *         allocation fails.
- * @warning This function allocates memory using malloc. The caller takes
- *          ownership of the returned t_string and must free it using
- *          \ref string_free to avoid a memory leak.
+ *
+ * @warning The caller owns the returned t_string and must free it using
+ *          string_free() to avoid memory leaks.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_new();
+ * string_append_cstr(s, "built ");
+ * string_append_cstr(s, "incrementally");
+ * printf("%s\n", string_cstr(s));  // prints: built incrementally
+ * string_free(s);
+ * @endcode
  */
 t_string* string_new();
 
@@ -143,12 +165,20 @@ t_string* string_new();
  * @memberof s_string
  *
  * Appends @p src bytes to the end of @p str. The function may reallocate
- * the internal buffer if needed to fit the additional data.
+ * the internal buffer if needed.
  *
  * @param str Pointer to the string to append to. Must not be NULL.
  * @param src Pointer to the data to append. Must not be NULL.
- * @return true on success, false if memory allocation fails or if @p str
- *         is NULL.
+ *
+ * @return true on success, false if memory allocation fails or arguments
+ *         are NULL.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("Hello");
+ * string_append(s, ", World!");
+ * printf("%s\n", string_cstr(s));  // prints: Hello, World!
+ * @endcode
  */
 bool string_append(t_string* str, const void* src);
 
@@ -156,16 +186,26 @@ bool string_append(t_string* str, const void* src);
  * @brief Append a t_string to another t_string.
  * @memberof s_string
  *
- * This function appends all bytes of @p src to the end of @p str.
- * It behaves like `string_append(dest, src->data)` but is provided
- * for clarity and to handle the case where src and dest are the
- * same object.
+ * Appends all bytes of @p src to the end of @p str. Handles the case where
+ * src and dest are the same object.
  *
  * @param str Pointer to the string to append to. Must not be NULL.
- * @param src t_string to append. If NULL, this function behaves like
- *             appending an empty string and returns true.
- * @return true on success, false on memory allocation failure or if @p str
- *         is NULL.
+ * @param src t_string to append. If NULL, treated as empty string.
+ *
+ * @return true on success, false on memory allocation failure.
+ *
+ * @par Example
+ * @code
+ * t_string* a = string_from("Hello");
+ * t_string* b = string_from(" World");
+ * string_append_string(a, b);
+ * printf("%s\n", string_cstr(a));  // prints: Hello World
+ *
+ * // Self-append (doubling)
+ * t_string* x = string_from("ab");
+ * string_append_string(x, x);
+ * printf("%s\n", string_cstr(x));  // prints: abab
+ * @endcode
  */
 bool string_append_string(t_string* str, const t_string* src);
 
@@ -174,13 +214,20 @@ bool string_append_string(t_string* str, const t_string* src);
  * @memberof s_string
  *
  * Appends the contents of @p cstr to the end of @p str. The function may
- * reallocate the internal buffer if needed to fit the additional data.
+ * reallocate the internal buffer if needed.
  *
  * @param str Pointer to the string to append to. Must not be NULL.
- * @param cstr C-style string to append. If NULL, this function behaves like
- *             appending an empty string and returns true.
- * @return true on success, false if memory allocation fails or if @p str
- *         is NULL.
+ * @param cstr C-style string to append. If NULL, treated as empty string.
+ *
+ * @return true on success, false if memory allocation fails.
+ *
+ * @par Example
+ * @code
+ * t_string* path = string_from("/home");
+ * string_append_cstr(path, "/user");
+ * string_append_cstr(path, "/documents");
+ * printf("%s\n", string_cstr(path));  // prints: /home/user/documents
+ * @endcode
  */
 bool string_append_cstr(t_string* str, const char* cstr);
 
@@ -239,6 +286,16 @@ bool string_prepend_cstr(t_string* str, const char* cstr);
  * is a no-op.
  *
  * @param s Pointer to the string to free. May be NULL.
+ *
+ * @warning After calling this function, the string pointer is invalid.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("temporary");
+ * // ... use string ...
+ * string_free(s);
+ * s = NULL;  // good practice
+ * @endcode
  */
 void string_free(t_string* s);
 
@@ -249,11 +306,24 @@ void string_free(t_string* s);
  * Allocates a new t_string and copies the contents of @p s into it.
  *
  * @param s Pointer to the source string to clone. Must not be NULL.
- * @return Pointer to a newly allocated t_string with the same contents as
- *         @p s, or NULL if allocation fails.
- * @warning This function allocates memory using malloc. The caller takes
- *          ownership of the returned t_string and must free it using
- *          \ref string_free to avoid leaks.
+ *
+ * @return Pointer to a newly allocated t_string with the same contents,
+ *         or NULL if allocation fails.
+ *
+ * @warning The caller owns the returned t_string and must free it.
+ *
+ * @par Example
+ * @code
+ * t_string* original = string_from("original");
+ * t_string* copy = string_clone(original);
+ *
+ * string_append_cstr(copy, " modified");
+ * printf("%s\n", string_cstr(original));  // prints: original
+ * printf("%s\n", string_cstr(copy));      // prints: original modified
+ *
+ * string_free(original);
+ * string_free(copy);
+ * @endcode
  */
 t_string* string_clone(const t_string* s);
 
@@ -379,31 +449,48 @@ bool string_insert_string(t_string* s, size_t pos, const t_string* src);
  * @memberof s_string
  *
  * Characters from @p pos onward are shifted to make room for @p cstr.
- * If @p pos is greater than the string size, the insertion fails and the
- * function returns false.
  *
  * @param s Pointer to the string to modify. Must not be NULL.
  * @param pos Index at which to insert. Must be <= current string size.
- * @param cstr C-style string to insert. If NULL it is treated as empty.
- * @return true on success, false if allocation fails, @p s is NULL or
- *         @p pos is out of bounds.
+ * @param cstr C-style string to insert. If NULL, treated as empty.
+ *
+ * @return true on success, false if allocation fails or @p pos is out of
+ *         bounds.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("Hello World");
+ * string_insert_cstr(s, 6, "Beautiful ");
+ * printf("%s\n", string_cstr(s));  // prints: Hello Beautiful World
+ * @endcode
  */
 bool string_insert_cstr(t_string* s, size_t pos, const char* cstr);
 
 /**
- * @brief Erase a substring from @p s starting at @p pos of length @p len.
+ * @brief Erase a substring from @p s.
  * @memberof s_string
  *
- * Characters following the erased segment are shifted left to fill the
- * gap. If @p pos is out of bounds this returns false. If @p pos + @p len
- * goes beyond the end of the string, the function erases up to the end
- * of the string.
+ * Removes @p len characters starting at @p pos. Characters following the
+ * erased segment are shifted left. If @p pos + @p len exceeds the string
+ * size, erases up to the end.
  *
  * @param s Pointer to the string to modify. Must not be NULL.
  * @param pos Position to begin erasing.
  * @param len Number of bytes to erase.
- * @return true on success, false if @p s is NULL or @p pos is out of
- *         bounds.
+ *
+ * @return true on success, false if @p s is NULL or @p pos is out of bounds.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("Hello World");
+ * string_erase(s, 5, 6);  // remove " World"
+ * printf("%s\n", string_cstr(s));  // prints: Hello
+ *
+ * // Erase from middle
+ * t_string* t = string_from("abcdefgh");
+ * string_erase(t, 2, 4);  // remove "cdef"
+ * printf("%s\n", string_cstr(t));  // prints: abgh
+ * @endcode
  */
 bool string_erase(t_string* s, size_t pos, size_t len);
 
@@ -467,60 +554,81 @@ bool string_replace_cstr(t_string* s, size_t pos, size_t len, const char* cstr);
  * @memberof s_string
  *
  * Allocates a new t_string containing a copy of the substring starting
- * at @p pos and up to @p len bytes. If @p pos is out of bounds this
- * function returns NULL. If @p pos + @p len exceeds the string size the
- * substring is truncated to the end of the string.
+ * at @p pos and up to @p len bytes. If @p pos + @p len exceeds the string
+ * size, the substring is truncated.
  *
  * @param s Source string.
  * @param pos Starting index for the substring.
  * @param len Maximum length of the substring.
- * @return Pointer to a newly allocated t_string holding the substring or
- *         NULL if allocation fails or if @p pos is out of bounds.
- * @warning This function allocates memory using malloc. The caller takes
- *          ownership of the returned t_string and must free it using
- *          \ref string_free to avoid a memory leak.
+ *
+ * @return Pointer to a newly allocated t_string, or NULL if allocation fails
+ *         or @p pos is out of bounds.
+ *
+ * @warning The caller owns the returned t_string and must free it.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("Hello World");
+ *
+ * t_string* hello = string_substr(s, 0, 5);
+ * t_string* world = string_substr(s, 6, 5);
+ *
+ * printf("%s\n", string_cstr(hello));  // prints: Hello
+ * printf("%s\n", string_cstr(world));  // prints: World
+ *
+ * string_free(hello);
+ * string_free(world);
+ * @endcode
  */
 t_string* string_substr(const t_string* s, size_t pos, size_t len);
 
 /**
- * @brief Find the first occurrence of @p needle in @p s starting at
- * position @p start.
+ * @brief Find the first occurrence of @p needle in @p s.
  * @memberof s_string
  *
  * @param s String to search in. Must not be NULL.
  * @param needle Pointer to the data to find. Must not be NULL.
  * @param start Index from where the search should begin.
- * @return Index of the first occurrence of @p needle at or after @p start,
- *         or -1 if not found. Returns -1 if @p s or @p needle is NULL.
+ *
+ * @return Index of the first occurrence at or after @p start, or -1 if not
+ *         found.
  */
 ssize_t string_find(const t_string* s, const void* needle, size_t start);
 
 /**
- * @brief Find the first occurrence of @p needle in @p s starting at
- * position @p start.
+ * @brief Find the first occurrence of @p needle in @p s.
  * @memberof s_string
  *
  * @param s String to search in. Must not be NULL.
- * @param needle t_string substring to find. If needle is empty returns @p
- *               start.
+ * @param needle t_string substring to find. If empty, returns @p start.
  * @param start Index from where the search should begin.
- * @return Index of the first occurrence of @p needle at or after @p start,
- *         or -1 if not found. Returns -1 if @p s or @p needle is NULL.
+ *
+ * @return Index of the first occurrence at or after @p start, or -1 if not
+ *         found.
  */
 ssize_t string_find_string(const t_string* s, const t_string* needle,
                            size_t start);
 
 /**
- * @brief Find the first occurrence of @p needle in @p s starting at
- * position @p start.
+ * @brief Find the first occurrence of @p needle in @p s.
  * @memberof s_string
  *
  * @param s String to search in. Must not be NULL.
- * @param needle C-style substring to find. If needle is empty returns @p
- *               start.
+ * @param needle C-style substring to find. If empty, returns @p start.
  * @param start Index from where the search should begin.
- * @return Index of the first occurrence of @p needle at or after @p start,
- *         or -1 if not found. Returns -1 if @p s or @p needle is NULL.
+ *
+ * @return Index of the first occurrence at or after @p start, or -1 if not
+ *         found.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("hello hello hello");
+ *
+ * ssize_t first = string_find_cstr(s, "hello", 0);   // first == 0
+ * ssize_t second = string_find_cstr(s, "hello", 1);  // second == 6
+ * ssize_t third = string_find_cstr(s, "hello", 7);   // third == 12
+ * ssize_t none = string_find_cstr(s, "world", 0);    // none == -1
+ * @endcode
  */
 ssize_t string_find_cstr(const t_string* s, const char* needle, size_t start);
 
@@ -561,10 +669,20 @@ ssize_t string_rfind_cstr(const t_string* s, const char* needle);
  * @memberof s_string
  *
  * @param s Source string. Must not be NULL.
- * @param prefix C-style prefix to check. If prefix is NULL or empty
- *               the function returns true.
- * @return true if @p s starts with @p prefix, false otherwise or if @p s
- *         or @p prefix is NULL.
+ * @param prefix C-style prefix to check. If NULL or empty, returns true.
+ *
+ * @return true if @p s starts with @p prefix, false otherwise.
+ *
+ * @par Example
+ * @code
+ * t_string* url = string_from("https://example.com");
+ *
+ * if (string_starts_with(url, "https://")) {
+ *   printf("Secure connection\n");
+ * } else if (string_starts_with(url, "http://")) {
+ *   printf("Insecure connection\n");
+ * }
+ * @endcode
  */
 bool string_starts_with(const t_string* s, const char* prefix);
 
@@ -573,10 +691,20 @@ bool string_starts_with(const t_string* s, const char* prefix);
  * @memberof s_string
  *
  * @param s Source string. Must not be NULL.
- * @param suffix C-style suffix to check. If suffix is NULL or empty the
- *               function returns true.
- * @return true if @p s ends with @p suffix, false otherwise or if @p s
- *         or @p suffix is NULL.
+ * @param suffix C-style suffix to check. If NULL or empty, returns true.
+ *
+ * @return true if @p s ends with @p suffix, false otherwise.
+ *
+ * @par Example
+ * @code
+ * t_string* filename = string_from("document.pdf");
+ *
+ * if (string_ends_with(filename, ".pdf")) {
+ *   printf("PDF file\n");
+ * } else if (string_ends_with(filename, ".txt")) {
+ *   printf("Text file\n");
+ * }
+ * @endcode
  */
 bool string_ends_with(const t_string* s, const char* suffix);
 
@@ -585,16 +713,27 @@ bool string_ends_with(const t_string* s, const char* suffix);
  * @memberof s_string
  *
  * Characters contained in @p chars are trimmed from the beginning and
- * end of @p s. If @p chars is NULL the function trims standard
- * whitespace characters.
+ * end of @p s. If @p chars is NULL, trims standard whitespace.
  *
  * @param s Source string. Must not be NULL.
  * @param chars Set of characters to remove from both ends.
- * @return Newly allocated t_string holding the trimmed contents or NULL
+ *
+ * @return Newly allocated t_string holding the trimmed contents, or NULL
  *         on allocation failure.
- * @warning This function allocates memory using malloc. The caller takes
- *          ownership of the returned t_string and must free it using
- *          \ref string_free to avoid a memory leak.
+ *
+ * @warning The caller owns the returned t_string and must free it.
+ *
+ * @par Example
+ * @code
+ * t_string* padded = string_from("   hello world   ");
+ * t_string* trimmed = string_trim(padded, NULL);
+ * printf("'%s'\n", string_cstr(trimmed));  // prints: 'hello world'
+ *
+ * // Custom trim characters
+ * t_string* path = string_from("///path/to/file///");
+ * t_string* clean = string_trim(path, "/");
+ * printf("%s\n", string_cstr(clean));  // prints: path/to/file
+ * @endcode
  */
 t_string* string_trim(const t_string* s, const char* chars);
 
@@ -602,13 +741,22 @@ t_string* string_trim(const t_string* s, const char* chars);
  * @brief Return a pointer to the string's internal, NUL-terminated buffer.
  * @memberof s_string
  *
- * The returned pointer points to the internal buffer of @p s and must not
- * be freed by the caller. The pointer remains valid until the string is
- * modified or freed.
+ * The returned pointer points to the internal buffer and must not be freed
+ * by the caller. Valid until the string is modified or freed.
  *
  * @param s Pointer to the string. Must not be NULL.
- * @return Pointer to a NUL-terminated C string. If @p s is NULL, or if the
- *         string is empty, returns NULL.
+ *
+ * @return Pointer to a NUL-terminated C string. Returns NULL if @p s is NULL
+ *         or the string is empty.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_from("Hello");
+ * printf("%s\n", string_cstr(s));  // Use with printf, etc.
+ *
+ * // Pass to C functions expecting const char*
+ * FILE* f = fopen(string_cstr(filename), "r");
+ * @endcode
  */
 char* string_cstr(t_string* s);
 
@@ -616,14 +764,20 @@ char* string_cstr(t_string* s);
  * @brief Compare two strings lexicographically.
  * @memberof s_string
  *
- * Returns an integer less than, equal to, or greater than zero if @p a is
- * found, respectively, to be less than, to match, or be greater than
- * @p b.
- *
  * @param a First string to compare.
  * @param b Second string to compare.
- * @return Negative value if a < b, zero if a == b, positive value if
- *         a > b.
+ *
+ * @return Negative if a < b, zero if a == b, positive if a > b.
+ *
+ * @par Example
+ * @code
+ * t_string* a = string_from("apple");
+ * t_string* b = string_from("banana");
+ *
+ * if (string_cmp(a, b) < 0) {
+ *   printf("apple comes before banana\n");
+ * }
+ * @endcode
  */
 int string_cmp(const t_string* a, const t_string* b);
 
@@ -633,8 +787,18 @@ int string_cmp(const t_string* a, const t_string* b);
  *
  * @param a First string.
  * @param b Second string.
- * @return true if both strings have the same size and identical contents,
- *         false otherwise.
+ *
+ * @return true if both strings have the same size and identical contents.
+ *
+ * @par Example
+ * @code
+ * t_string* a = string_from("hello");
+ * t_string* b = string_from("hello");
+ * t_string* c = string_from("HELLO");
+ *
+ * string_equals(a, b);  // true
+ * string_equals(a, c);  // false (case-sensitive)
+ * @endcode
  */
 bool string_equals(const t_string* a, const t_string* b);
 
@@ -642,44 +806,81 @@ bool string_equals(const t_string* a, const t_string* b);
  * @brief Case-insensitive lexicographic comparison of two strings.
  * @memberof s_string
  *
- * Similar to string_cmp but treats characters case-insensitively.
- *
  * @param a First string.
  * @param b Second string.
- * @return Negative value if a < b, zero if a == b, positive value if
- *         a > b when compared case-insensitively.
+ *
+ * @return Negative if a < b, zero if a == b, positive if a > b
+ *         (case-insensitive).
+ *
+ * @par Example
+ * @code
+ * t_string* a = string_from("Hello");
+ * t_string* b = string_from("HELLO");
+ *
+ * string_cmp(a, b);      // non-zero (different)
+ * string_casecmp(a, b);  // 0 (equal ignoring case)
+ * @endcode
  */
 int string_casecmp(const t_string* a, const t_string* b);
 
 /**
- * @brief Format a string with printf-like semantics and store the result in @p
- * s.
+ * @brief Format a string with printf-like semantics.
  * @memberof s_string
  *
- * Writes formatted output into @p s, growing it as necessary. The function
- * follows printf formatting rules.
+ * Writes formatted output into @p s, replacing its contents. Grows the
+ * buffer as necessary.
  *
  * @param s Pointer to the string to write into. Must not be NULL.
  * @param fmt printf-style format string.
- * @return true on success, false if memory allocation fails or @p s is NULL.
+ * @param ... Format arguments.
+ *
+ * @return true on success, false if memory allocation fails.
+ *
+ * @par Example
+ * @code
+ * t_string* s = string_new();
+ * string_format(s, "Name: %s, Age: %d", "Alice", 30);
+ * printf("%s\n", string_cstr(s));  // prints: Name: Alice, Age: 30
+ *
+ * // Build path
+ * string_format(s, "%s/%s/%s", home, user, file);
+ * @endcode
  */
 bool string_format(t_string* s, const char* fmt, ...)
     __attribute__((format(printf, 2, 3)));
 
 /**
- * @brief Split a string into a vector of substrings separated by @p sep.
+ * @brief Split a string into a vector of substrings.
  * @memberof s_string
  *
  * Returns a t_vec containing t_string* elements for each token. Empty
- * tokens are preserved (for consecutive separators). The caller takes
- * ownership of the returned vector and each t_string* inside it.
+ * tokens are preserved for consecutive separators.
  *
  * @param s Source string to split. Must not be NULL.
  * @param sep Character used as the delimiter.
- * @return Pointer to a t_vec on success or NULL on allocation failure.
- * @warning This function allocates memory for the vector and each split
- *          element. The caller is responsible for freeing all elements
- *          and the vector itself to avoid memory leaks.
+ *
+ * @return Pointer to a t_vec on success, or NULL on allocation failure.
+ *
+ * @warning The caller is responsible for freeing each t_string* in the
+ *          vector and the vector itself.
+ *
+ * @par Example
+ * @code
+ * t_string* csv = string_from("apple,banana,cherry");
+ * t_vec* parts = string_split(csv, ',');
+ *
+ * for (size_t i = 0; i < parts->size; i++) {
+ *   t_string** sp = vec_get(parts, i);
+ *   printf("%zu: %s\n", i, string_cstr(*sp));
+ *   string_free(*sp);
+ * }
+ * vec_free(parts);
+ *
+ * // Output:
+ * // 0: apple
+ * // 1: banana
+ * // 2: cherry
+ * @endcode
  */
 t_vec* string_split(const t_string* s, char sep);
 
