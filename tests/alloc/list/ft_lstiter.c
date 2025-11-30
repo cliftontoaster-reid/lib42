@@ -3,49 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstiter.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: github-lfiorell <lfiorell@student.42nice.fr>        +#+  +:+       +#+
+ */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 12:35:00 by lfiorell@st           #+#    #+# */
-/*   Updated: 2025/11/07 14:10:20 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/11/30 20:05:00 by lfiorell            #+#    #+# */
+/*   Updated: 2025/11/30 20:05:00 by lfiorell           ###   ########.fr */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "42/alloc/list.h"
+#include "support/list_helpers.h"
 
-static void add_five(void* p) {
+void doubler(void* p) {
   if (!p) return;
-  int* x = p;
-  *x += 5;
+  *(int*)p *= 2;
 }
 
-Test(ft_lstiter, applies_function_to_each_node) {
-  t_list* a = ft_lstnew(malloc(sizeof(int)));
-  *(int*)a->content = 1;
-  t_list* b = ft_lstnew(malloc(sizeof(int)));
-  *(int*)b->content = 2;
-  t_list* c = ft_lstnew(malloc(sizeof(int)));
-  *(int*)c->content = 3;
-
-  ft_lstadd_back(&a, b);
-  ft_lstadd_back(&a, c);
-
-  ft_lstiter(a, add_five);
-
-  cr_assert_eq(*(int*)a->content, 6);
-  cr_assert_eq(*(int*)a->next->content, 7);
-  cr_assert_eq(*(int*)a->next->next->content, 8);
-
-  ft_lstclear(&a, free);
+Test(ft_lstiter, null_list_noop) {
+  spy_iter_reset();
+  ft_lstiter(NULL, spy_iter_record);
+  cr_assert_eq(spy_iter_count(), 0);
 }
 
-Test(ft_lstiter, null_list_or_function_noop) {
-  ft_lstiter(NULL, add_five);
-  t_list* a = ft_lstnew(malloc(sizeof(int)));
-  *(int*)a->content = 4;
-  ft_lstiter(a, NULL);
-  cr_assert_eq(*(int*)a->content, 4);
-  ft_lstclear(&a, free);
+Test(ft_lstiter, null_function_noop) {
+  t_list* list = NULL;
+  ft_lstadd_back(&list, make_int_node(1));
+  ft_lstiter(list, NULL);
+  int expected[] = {1};
+  cr_assert(assert_list_ints(list, expected, 1));
+  ft_lstclear(&list, free_int_content);
+}
+
+Test(ft_lstiter, doubles_all_ints) {
+  t_list* list = NULL;
+  ft_lstadd_back(&list, make_int_node(1));
+  ft_lstadd_back(&list, make_int_node(2));
+  ft_lstadd_back(&list, make_int_node(3));
+  ft_lstiter(list, doubler);
+  int expected[] = {2, 4, 6};
+  cr_assert(assert_list_ints(list, expected, 3));
+  ft_lstclear(&list, free_int_content);
+}
+
+Test(ft_lstiter, spy_function_called_expected_times) {
+  t_list* list = NULL;
+  ft_lstadd_back(&list, make_int_node(1));
+  ft_lstadd_back(&list, make_int_node(2));
+  spy_iter_reset();
+  ft_lstiter(list, spy_iter_record);
+  cr_assert_eq(spy_iter_count(), 2);
+  ft_lstclear(&list, free_int_content);
 }

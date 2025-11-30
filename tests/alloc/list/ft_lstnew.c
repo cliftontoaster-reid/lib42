@@ -3,37 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: github-lfiorell <lfiorell@student.42nice.fr>        +#+  +:+       +#+
+ */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/07 12:00:00 by lfiorell@st           #+#    #+# */
-/*   Updated: 2025/11/07 14:10:20 by lfiorell@st      ###   ########.fr       */
+/*   Created: 2025/11/30 19:20:00 by lfiorell            #+#    #+# */
+/*   Updated: 2025/11/30 19:20:00 by lfiorell           ###   ########.fr */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <criterion/criterion.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include "42/alloc/list.h"
+#include "support/list_helpers.h"
 
-Test(ft_lstnew, alloc_with_content) {
-  int* p = malloc(sizeof(*p));
-  cr_assert_not_null(p);
-  *p = 42;
-
-  t_list* node = ft_lstnew(p);
+Test(ft_lstnew, creates_node_with_content_and_null_next) {
+  int* n = make_int_content(42);
+  t_list* node = ft_lstnew(n);
   cr_assert_not_null(node);
-  cr_assert_eq(node->content, p);
+  cr_assert_eq(node->content, n);
   cr_assert_null(node->next);
-
-  free(p);
-  free(node);
+  /* cleanup */
+  ft_lstdelone(node, free_int_content);
 }
 
-Test(ft_lstnew, null_content) {
+Test(ft_lstnew, creates_node_with_null_content) {
   t_list* node = ft_lstnew(NULL);
   cr_assert_not_null(node);
   cr_assert_null(node->content);
   cr_assert_null(node->next);
-  free(node);
+  ft_lstdelone(node, NULL);
 }

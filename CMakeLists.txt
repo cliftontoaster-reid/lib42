@@ -93,10 +93,11 @@ if(BUILD_TESTING)
     # Collect tests
     file(GLOB_RECURSE TEST_SOURCES "tests/*.c")
     if(TEST_SOURCES)
+      file(GLOB_RECURSE TEST_SUPPORT_SOURCES "tests/support/*.c")
       foreach(test_file ${TEST_SOURCES})
         get_filename_component(test_name ${test_file} NAME_WE)
-        add_executable(${test_name} ${test_file})
-        target_include_directories(${test_name} PRIVATE include)
+        add_executable(${test_name} ${test_file} ${TEST_SUPPORT_SOURCES})
+        target_include_directories(${test_name} PRIVATE include ${CMAKE_SOURCE_DIR}/tests)
         # Link the library under test and Criterion
         if(TARGET Criterion::Criterion)
           target_link_libraries(${test_name} PRIVATE lib42_static Criterion::Criterion)
