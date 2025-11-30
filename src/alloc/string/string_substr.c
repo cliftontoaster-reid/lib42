@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_substr.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 11:00:25 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/19 11:01:32 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 17:41:31 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@
  */
 t_string* string_substr(const t_string* s, size_t pos, size_t len) {
   if (s == NULL) return NULL;
-  if (pos >= s->size) return NULL;
+  if (pos > s->size) return NULL;
+  if (pos == s->size && len > 0) return NULL;
 
   size_t substr_len = len;
   if (pos + len > s->size) {
@@ -43,6 +44,10 @@ t_string* string_substr(const t_string* s, size_t pos, size_t len) {
 
   t_string* substr = string_new();
   if (substr == NULL) return NULL;
+
+  if (substr_len == 0) {
+    return substr;
+  }
 
   if (!string_reserve(substr, substr_len)) {
     string_free(substr);

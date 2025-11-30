@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_erase.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 10:29:12 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/19 11:58:31 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 17:41:31 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,23 @@ bool string_erase(t_string* s, size_t pos, size_t len) {
   if (s == NULL) return false;
   if (pos >= s->size) return false;
 
+  size_t actual_len = len;
   if (pos + len >= s->size) {
+    actual_len = s->size - pos;
+  }
+
+  if (pos + len >= s->size) {
+    // Erase to end - just zero the bytes we're removing and update size
+    ft_bzero(s->data + pos, actual_len);
     s->size = pos;
-    ft_bzero(s->data + s->size, len);
+    s->data[s->size] = '\0';
     return true;
   }
 
   ft_memmove(s->data + pos, s->data + pos + len, s->size - (pos + len));
   s->size -= len;
   ft_bzero(s->data + s->size, len);
+  s->data[s->size] = '\0';
 
   return true;
 }

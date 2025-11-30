@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string_free.c                                      :+:      :+:    :+:   */
+/*   string_ends_with.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/18 21:20:46 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/30 17:41:31 by lfiorell         ###   ########.fr       */
+/*   Created: 2025/11/30 17:34:41 by lfiorell          #+#    #+#             */
+/*   Updated: 2025/11/30 17:37:36 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include <criterion/criterion.h>
 
 #include "42/alloc/string.h"
+#include "support/string_helpers.h"
 
-/**
- * @brief Free a string and its internal data.
- *
- * Frees the internal buffer and the t_string structure itself. Passing NULL
- * is a no-op.
- *
- * @param s Pointer to the string to free. May be NULL.
- */
-void string_free(t_string* s) {
-  if (s == NULL) return;
-  if (!string_tagged(s)) return;
-
-  if (s->data != NULL) free(s->data);
-  s->magic = 0;
-  free(s);
+Test(string_ends_with, suffix_cases) {
+  t_string* s = string_from("document.pdf");
+  cr_assert(string_ends_with(s, ".pdf"));
+  cr_assert_not(string_ends_with(s, NULL));
+  cr_assert(string_ends_with(s, ""));
+  cr_assert_not(string_ends_with(s, ".txt"));
+  string_free(s);
 }

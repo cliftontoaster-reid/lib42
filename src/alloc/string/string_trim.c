@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_trim.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 12:12:23 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/20 10:39:18 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 17:41:31 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ t_string* string_trim(const t_string* s, const char* chars) {
            ft_strchr(chars, s->data[end_trim - 1]) != NULL) {
       end_trim--;
     }
+  }
+  if (start_trim >= end_trim) {
+    return string_new();
   }
   return string_substr(s, start_trim, end_trim - start_trim);
 }

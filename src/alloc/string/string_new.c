@@ -6,11 +6,9 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:20:01 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 16:20:01 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 17:41:31 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 
 #include <stdlib.h>
 
@@ -34,8 +32,13 @@ t_string* string_new() {
 
   s->magic = STRING_MAGIC;
   s->size = 0;
-  s->capacity = 0;
-  s->data = NULL;
+  s->capacity = 1;
+  s->data = (char*)malloc(1);
+  if (!s->data) {
+    free(s);
+    return NULL;
+  }
+  s->data[0] = '\0';
 
   return s;
 }

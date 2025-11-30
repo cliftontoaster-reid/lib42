@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 16:24:31 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 16:29:40 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 17:41:31 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@
  */
 bool string_tagged(const void* s) {
   if (s == NULL) return false;
-  // Check the length to not read out of bounds
-  size_t len = ft_strlen((const char*)s);
-  if (len < sizeof(uint32_t)) return false;
-  t_string *str = (t_string*)s;
+  const t_string* str = (const t_string*)s;
   return str->magic == STRING_MAGIC;
 }
