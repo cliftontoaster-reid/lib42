@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 19:01:09 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 19:01:42 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:40:24 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_ptr(int fd, const void* ptr, bool uppercase) {
+  if (fd < 0) return -1;
+
   uintptr_t address = (uintptr_t)ptr;
   ssize_t bytes_written = 0;
 

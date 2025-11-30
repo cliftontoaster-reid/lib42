@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 16:58:57 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/29 20:20:03 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:40:38 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "42/io/basic.h"
 
 ssize_t io_push_uint(int fd, uint64_t n) {
+  if (fd < 0) return -1;
+
   char buffer[32];
   size_t i = 0;
 

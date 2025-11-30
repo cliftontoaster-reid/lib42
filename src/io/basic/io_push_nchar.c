@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 19:04:27 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 19:05:51 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:40:12 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_nchar(int fd, char c, size_t n) {
+  if (fd < 0) return -1;
+
   ssize_t total_written = 0;
 
   for (size_t i = 0; i < n; i++) {

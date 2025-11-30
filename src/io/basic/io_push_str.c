@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 19:06:09 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 19:29:29 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:40:34 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_cstr(int fd, const char* str) {
+  if (fd < 0 || str == NULL) return -1;
+
   size_t len = ft_strlen(str);
 
   return write(fd, str, len);
@@ -37,5 +39,7 @@ ssize_t io_push_cstr(int fd, const char* str) {
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_string(int fd, const t_string* str) {
+  if (fd < 0 || str == NULL) return -1;
+
   return write(fd, str->data, str->size);
 }

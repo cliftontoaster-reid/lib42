@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 19:20:00 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 19:26:24 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:40:03 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ static ssize_t push_frac_int(int fd, frac_int_t n) {
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_ldouble(int fd, long double n, int precision) {
+  if (fd < 0) return -1;
+
   ssize_t bytes_written = 0;
   uint64_t int_part;
   frac_int_t frac_part;

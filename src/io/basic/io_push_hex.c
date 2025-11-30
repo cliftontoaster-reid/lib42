@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 18:54:20 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 20:20:03 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:39:51 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #define HEX_BASE_UPPER "0123456789ABCDEF"
 
 ssize_t io_push_hex(int fd, uint64_t n, bool uppercase) {
+  if (fd < 0) return -1;
+
   char buffer[32];
   size_t i = 0;
   const char* base = uppercase ? HEX_BASE_UPPER : HEX_BASE_LOWER;

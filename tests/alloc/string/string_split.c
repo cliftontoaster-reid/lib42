@@ -86,3 +86,98 @@ Test(string_split, empty_string_returns_single_empty_token) {
   vec_free(parts);
   string_free(s);
 }
+
+Test(string_split, no_separator) {
+  t_string* s = string_from("apple");
+  t_vec* parts = string_split(s, ',');
+  cr_assert_not_null(parts);
+  cr_assert_eq(parts->size, 1);
+  cr_assert_str_eq(get_token_str(parts, 0), "apple");
+  for (size_t i = 0; i < parts->size; ++i) {
+    t_string* t = *(t_string**)vec_get(parts, i);
+    string_free(t);
+  }
+  vec_free(parts);
+  string_free(s);
+}
+
+Test(string_split, only_separators) {
+  t_string* s = string_from(",,,");
+  t_vec* parts = string_split(s, ',');
+  cr_assert_not_null(parts);
+  cr_assert_eq(parts->size, 4);
+  for (size_t i = 0; i < parts->size; ++i) {
+    cr_assert_null(get_token_str(parts, i));
+    t_string* t = *(t_string**)vec_get(parts, i);
+    string_free(t);
+  }
+  vec_free(parts);
+  string_free(s);
+}
+
+Test(string_split, leading_only) {
+  t_string* s = string_from(",a");
+  t_vec* parts = string_split(s, ',');
+  cr_assert_not_null(parts);
+  cr_assert_eq(parts->size, 2);
+  cr_assert_null(get_token_str(parts, 0));
+  cr_assert_str_eq(get_token_str(parts, 1), "a");
+  for (size_t i = 0; i < parts->size; ++i) {
+    t_string* t = *(t_string**)vec_get(parts, i);
+    string_free(t);
+  }
+  vec_free(parts);
+  string_free(s);
+}
+
+Test(string_split, trailing_only) {
+  t_string* s = string_from("a,");
+  t_vec* parts = string_split(s, ',');
+  cr_assert_not_null(parts);
+  cr_assert_eq(parts->size, 2);
+  cr_assert_str_eq(get_token_str(parts, 0), "a");
+  cr_assert_null(get_token_str(parts, 1));
+  for (size_t i = 0; i < parts->size; ++i) {
+    t_string* t = *(t_string**)vec_get(parts, i);
+    string_free(t);
+  }
+  vec_free(parts);
+  string_free(s);
+}
+
+Test(string_split, multi_consecutive_separators) {
+  t_string* s = string_from("a,,,b");
+  t_vec* parts = string_split(s, ',');
+  cr_assert_not_null(parts);
+  cr_assert_eq(parts->size, 4);
+  cr_assert_str_eq(get_token_str(parts, 0), "a");
+  cr_assert_null(get_token_str(parts, 1));
+  cr_assert_null(get_token_str(parts, 2));
+  cr_assert_str_eq(get_token_str(parts, 3), "b");
+  for (size_t i = 0; i < parts->size; ++i) {
+    t_string* t = *(t_string**)vec_get(parts, i);
+    string_free(t);
+  }
+  vec_free(parts);
+  string_free(s);
+}
+
+Test(string_split, null_input_returns_null) {
+  t_vec* parts = string_split(NULL, ',');
+  cr_assert_null(parts);
+}
+
+Test(string_split, tokens_independent_from_source) {
+  t_string* s = string_from("foo,bar");
+  t_vec* parts = string_split(s, ',');
+  cr_assert_not_null(parts);
+  cr_assert_eq(parts->size, 2);
+  string_free(s); /* free source, tokens should remain valid */
+  cr_assert_str_eq(get_token_str(parts, 0), "foo");
+  cr_assert_str_eq(get_token_str(parts, 1), "bar");
+  for (size_t i = 0; i < parts->size; ++i) {
+    t_string* t = *(t_string**)vec_get(parts, i);
+    string_free(t);
+  }
+  vec_free(parts);
+}

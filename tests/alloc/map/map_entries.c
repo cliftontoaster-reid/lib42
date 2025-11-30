@@ -40,3 +40,27 @@ Test(map_entries, entries_return_list_of_map_entries) {
   cr_assert_eq(count, (int)map_size(m));
   map_free(m);
 }
+
+Test(map_entries_mut, entries_mut_null_for_empty_map) {
+  t_map* m = map_create(0, 0, NULL);
+  cr_assert_null(map_entries_mut(m));
+  map_free(m);
+}
+
+Test(map_entries_mut, entries_mut_return_list_of_map_entries) {
+  t_map* m = map_create(sizeof(int), sizeof(int), NULL);
+  int k1 = 1, k2 = 2, v = 0;
+  cr_assert(map_set(m, &k1, sizeof(k1), &v, sizeof(v), 0, NULL, NULL));
+  cr_assert(map_set(m, &k2, sizeof(k2), &v, sizeof(v), 0, NULL, NULL));
+  t_list* entries = map_entries_mut(m);
+  cr_assert_not_null(entries);
+  int count = 0;
+  for (const t_list* n = entries; n; n = n->next) {
+    t_map_entry* e = n->content;
+    cr_assert_not_null(e);
+    cr_assert_eq(e->value_size, sizeof(v));
+    count++;
+  }
+  cr_assert_eq(count, (int)map_size(m));
+  map_free(m);
+}

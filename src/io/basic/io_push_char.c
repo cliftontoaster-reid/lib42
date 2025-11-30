@@ -3,13 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   io_push_char.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lfiorell@student.42nice.fr <lfiorell>      +#+  +:+       +#+        */
+/*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 16:57:38 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/14 16:57:46 by lfiorell@st      ###   ########.fr       */
+/*   Updated: 2025/11/30 19:39:20 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42/io/basic.h"
 
-ssize_t io_push_char(int fd, char c) { return (write(fd, &c, 1)); }
+ssize_t io_push_char(int fd, char c) {
+  if (fd < 0) return -1;
+  return (write(fd, &c, 1));
+}

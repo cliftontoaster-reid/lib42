@@ -18,14 +18,14 @@
 #include "42/io/basic.h"
 
 Test(io_push_char, write_single_char, .init = cr_redirect_stdout) {
-  ssize_t written = io_push_nchar(STDOUT_FILENO, 'A', 1);
+  ssize_t written = io_push_char(STDOUT_FILENO, 'A');
   fflush(stdout);
   cr_assert_eq(written, 1);
   cr_assert_stdout_eq_str("A");
 }
 
 Test(io_push_char, write_null_char, .init = cr_redirect_stdout) {
-  ssize_t written = io_push_nchar(STDOUT_FILENO, '\0', 1);
+  ssize_t written = io_push_char(STDOUT_FILENO, '\0');
   fflush(stdout);
   cr_assert_eq(written, 1);
   FILE* f = cr_get_redirected_stdout();
@@ -35,6 +35,6 @@ Test(io_push_char, write_null_char, .init = cr_redirect_stdout) {
 }
 
 Test(io_push_char, invalid_fd_returns_negative) {
-  ssize_t written = io_push_nchar(-1, 'X', 1);
+  ssize_t written = io_push_char(-1, 'X');
   cr_assert_eq(written, -1);
 }

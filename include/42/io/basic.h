@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/13 12:00:19 by lfiorell@st       #+#    #+#             */
-/*   Updated: 2025/11/29 19:05:59 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:42:52 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,15 @@
  * raw bytes. All functions return the number of bytes written or -1 on error,
  * making them suitable for robust I/O operations in C programs.
  */
+
+/**
+ * @brief Writes a single character to the specified file descriptor.
+ * @ingroup io::write
+ * @param fd The file descriptor to write to.
+ * @param c The character to write.
+ * @return The number of bytes written, or -1 on error.
+ */
+ssize_t io_push_char(int fd, char c);
 
 /**
  * @param fd The file descriptor to write to.

@@ -16,6 +16,15 @@ runtimes:
     - python@3.10.8
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
+  compile_commands: json
+  definitions:
+    - name: clang-tidy
+      # Disable sandboxing entirely - parentheses in path break Trunk's file copying
+      include_scanner_type: none
+      commands:
+        - name: lint
+          run: clang-tidy --export-fixes=${tmpfile} ${target} -p ${workspace}/compile_commands.json
+          run_from: workspace
   enabled:
     - actionlint@1.7.9
     - checkov@3.2.495

@@ -56,3 +56,17 @@ Test(io_push_ldouble, write_minus_inf, .init = cr_redirect_stdout) {
   cr_assert_eq(wrote, 4);
   cr_assert_stdout_eq_str("-inf");
 }
+
+Test(io_push_ldouble, write_negative, .init = cr_redirect_stdout) {
+  ssize_t wrote = io_push_ldouble(STDOUT_FILENO, -2.718281828459045235L, 6);
+  fflush(stdout);
+  cr_assert_eq(wrote, 9);
+  cr_assert_stdout_eq_str("-2.718282");
+}
+
+Test(io_push_ldouble, write_zero_precision_0, .init = cr_redirect_stdout) {
+  ssize_t wrote = io_push_ldouble(STDOUT_FILENO, 3.14159L, 0);
+  fflush(stdout);
+  cr_assert_eq(wrote, 1);
+  cr_assert_stdout_eq_str("3");
+}

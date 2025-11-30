@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 19:13:18 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 19:26:26 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:39:41 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static uint64_t power_of_10(int exp) {
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_double(int fd, double n, int precision) {
+  if (fd < 0) return -1;
+
   ssize_t bytes_written = 0;
   uint64_t int_part;
   uint64_t frac_part;

@@ -29,3 +29,52 @@ Test(ft_lstdelone, del_not_called_when_del_is_null) {
   ft_lstdelone(node, NULL);
   cr_assert_eq(spy_del_count(), 0);
 }
+
+Test(ft_lstdelone, deletes_middle_node_and_preserves_list) {
+  t_list* list = make_int_node(1);
+  ft_lstadd_back(&list, make_int_node(2));
+  ft_lstadd_back(&list, make_int_node(3));
+  t_list* mid = list->next;
+  spy_del_reset();
+  ft_lstdelone(mid, spy_and_free_del);
+  cr_assert_eq(spy_del_count(), 1);
+  int expected[] = {1, 3};
+  cr_assert(assert_list_ints(list, expected, 2));
+  ft_lstclear(&list, free_int_content);
+}
+
+Test(ft_lstdelone, deletes_middle_node_without_del) {
+  t_list* list = make_int_node(1);
+  ft_lstadd_back(&list, make_int_node(2));
+  ft_lstadd_back(&list, make_int_node(3));
+  t_list* mid = list->next;
+  spy_del_reset();
+  ft_lstdelone(mid, NULL);
+  cr_assert_eq(spy_del_count(), 0);
+  int expected[] = {1, 3};
+  cr_assert(assert_list_ints(list, expected, 2));
+  ft_lstclear(&list, free_int_content);
+}
+
+Test(ft_lstdelone, deletes_head_and_moves_content) {
+  t_list* list = make_int_node(1);
+  ft_lstadd_back(&list, make_int_node(2));
+  ft_lstadd_back(&list, make_int_node(3));
+  spy_del_reset();
+  ft_lstdelone(list, spy_and_free_del);
+  cr_assert_eq(spy_del_count(), 1);
+  int expected[] = {2, 3};
+  cr_assert(assert_list_ints(list, expected, 2));
+  ft_lstclear(&list, free_int_content);
+}
+
+Test(ft_lstdelone, deletes_head_without_del) {
+  t_list* list = make_int_node(1);
+  ft_lstadd_back(&list, make_int_node(2));
+  spy_del_reset();
+  ft_lstdelone(list, NULL);
+  cr_assert_eq(spy_del_count(), 0);
+  int expected[] = {2};
+  cr_assert(assert_list_ints(list, expected, 1));
+  ft_lstclear(&list, free_int_content);
+}

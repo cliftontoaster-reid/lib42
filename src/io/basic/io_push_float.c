@@ -6,7 +6,7 @@
 /*   By: lfiorell <lfiorell@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 19:10:02 by lfiorell          #+#    #+#             */
-/*   Updated: 2025/11/29 19:12:08 by lfiorell         ###   ########.fr       */
+/*   Updated: 2025/11/30 19:39:46 by lfiorell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,7 @@
  * @return The number of bytes written, or -1 on error.
  */
 ssize_t io_push_float(int fd, float n, int precision) {
+  if (fd < 0) return -1;
+
   return io_push_double(fd, (double)n, precision);
 }
