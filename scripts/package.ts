@@ -2,10 +2,12 @@
 
 import { FedoraPlatform } from "./build/fedora.ts";
 import { DebianPlatform } from "./build/debian.ts";
+import { ArchPlatform } from "./build/arch.ts";
 
 const supportedPackages = [
   ["debian", "deb"],
   ["fedora", "rpm"],
+  ["arch", "aur"],
 ];
 
 const buildDir = "./dist";
@@ -54,6 +56,13 @@ async function runPlatformPackage(platformId: string): Promise<void> {
         }
       }
       await platform.cleanup();
+      break;
+    }
+    case "arch": {
+      const platform = new ArchPlatform({ outDir: buildDir });
+      const aurPath = await platform.run();
+      console.info(`AUR repo created at: ${aurPath}`);
+      console.info("To install: cd dist/arch && makepkg -si");
       break;
     }
     default:

@@ -1,0 +1,29 @@
+# Maintainer: Your Name <your.email@example.com>
+pkgname=lib42
+pkgver=@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@@PROJECT_VERSION_PRERELEASE@
+pkgrel=1
+pkgdesc="42-style utility library for C"
+arch=('x86_64' 'aarch64')
+url="https://github.com/cliftontoaster-reid/lib42"
+license=('LGPL-3.0-or-later')
+depends=('glibc')
+makedepends=('cmake' 'gcc')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/cliftontoaster-reid/lib42/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$pkgname-$pkgver"
+    cmake -B build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DBUILD_TESTING=OFF
+    cmake --build build
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+    DESTDIR="$pkgdir" cmake --install build
+    
+    # Install license
+    install -Dm644 LICENCE.md "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
